@@ -30,14 +30,14 @@
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:git:git://github.com/ExpediaDotCom/haystack-alert-manager.git</connection>
-        <developerConnection>scm:git:ssh://github.com/ExpediaDotCom/haystack-alert-manager.git</developerConnection>
-        <url>http://github.com/ExpediaDotCom/haystack-alert-manager</url>
+        <connection>scm:git:git://github.com/ExpediaDotCom/haystack-alerting.git</connection>
+        <developerConnection>scm:git:ssh://github.com/ExpediaDotCom/haystack-alerting.git</developerConnection>
+        <url>http://github.com/ExpediaDotCom/haystack-alerting</url>
     </scm>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Code to integrate haystack with alert management system</description>
-    <url>https://github.com/ExpediaDotCom/haystack-alert-manager/tree/master</url>
+    <description>Code to integrate haystack with expedia's adaptive alerting and alert management system</description>
+    <url>https://github.com/ExpediaDotCom/haystack-alerting/tree/master</url>
 
     <licenses>
         <!--
@@ -71,7 +71,7 @@
             <id>haystack</id>
             <name>Haystack Team</name>
             <email>haystack@expedia.com</email>
-            <url>https://github.com/ExpediaDotCom/haystack-alert-manager</url>
+            <url>https://github.com/ExpediaDotCom/haystack-alerting</url>
         </developer>
     </developers>
 
