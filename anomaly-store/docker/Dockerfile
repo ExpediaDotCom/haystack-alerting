@@ -1,6 +1,6 @@
 FROM openjdk:8-jre
 
-ENV APP_NAME alert-manager-store
+ENV APP_NAME anomaly-store
 ENV APP_HOME /app/bin
 ENV JMXTRANS_AGENT jmxtrans-agent-1.2.6
 
