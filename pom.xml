@@ -25,19 +25,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.expedia.www</groupId>
-    <artifactId>haystack-alert-manager</artifactId>
+    <artifactId>haystack-alerting</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:git:git://github.com/ExpediaDotCom/haystack-alert-manager.git</connection>
-        <developerConnection>scm:git:ssh://github.com/ExpediaDotCom/haystack-alert-manager.git</developerConnection>
-        <url>http://github.com/ExpediaDotCom/haystack-alert-manager</url>
+        <connection>scm:git:git://github.com/ExpediaDotCom/haystack-alerting.git</connection>
+        <developerConnection>scm:git:ssh://github.com/ExpediaDotCom/haystack-alerting.git</developerConnection>
+        <url>http://github.com/ExpediaDotCom/haystack-alerting</url>
     </scm>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Code to integrate haystack with alert management system</description>
-    <url>https://github.com/ExpediaDotCom/haystack-alert-manager/tree/master</url>
+    <description>Code to integrate haystack with expedia's adaptive alerting and alert management system</description>
+    <url>https://github.com/ExpediaDotCom/haystack-alerting/tree/master</url>
 
     <licenses>
         <!--
@@ -71,12 +71,12 @@
             <id>haystack</id>
             <name>Haystack Team</name>
             <email>haystack@expedia.com</email>
-            <url>https://github.com/ExpediaDotCom/haystack-alert-manager</url>
+            <url>https://github.com/ExpediaDotCom/haystack-alerting</url>
         </developer>
     </developers>
 
     <modules>
-        <module>subscription-manager</module>
+        <module>alert-api</module>
     </modules>
 
     <properties>
@@ -121,11 +121,12 @@
         <scalastyle.config.location>${project.basedir}/../scalastyle/scalastyle_config.xml</scalastyle.config.location>
         <maven-scalastyle-plugin.version>0.9.0</maven-scalastyle-plugin.version>
         <scoverage.plugin.version>1.3.0</scoverage.plugin.version>
-        <mainClass>com.expedia.www.haystack.subscription.manager.App</mainClass>
+        <mainClass>com.expedia.www.haystack.alert.api.App</mainClass>
 
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <jackson.version>2.9.5</jackson.version>
 
         <skipGpg>true</skipGpg>
 
@@ -220,6 +221,18 @@
                 <artifactId>config</artifactId>
                 <version>${typesafe-config.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-scala_${scala.major.minor.version}</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <dependency>

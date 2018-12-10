@@ -1,1 +1,1 @@
-# haystack-alert-manager
+# haystack-alerting
