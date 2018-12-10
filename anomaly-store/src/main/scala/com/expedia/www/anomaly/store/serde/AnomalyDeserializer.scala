@@ -19,6 +19,7 @@ package com.expedia.www.anomaly.store.serde
 import java.util
 
 import com.expedia.metrics.MetricData
+import com.expedia.metrics.jackson.MetricsJavaModule
 import com.expedia.www.anomaly.store.backend.api.Anomaly
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -28,7 +29,9 @@ import org.apache.kafka.common.serialization.Deserializer
 case class AnomalyResult(metricData: MetricData)
 
 class AnomalyDeserializer extends Deserializer[Anomaly] {
-  private val mapper = new ObjectMapper().registerModule(new DefaultScalaModule)
+  private val mapper = new ObjectMapper()
+    .registerModule(new DefaultScalaModule)
+    .registerModule(new MetricsJavaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
 

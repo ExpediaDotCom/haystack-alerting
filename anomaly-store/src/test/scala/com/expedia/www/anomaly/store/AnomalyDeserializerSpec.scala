@@ -28,11 +28,11 @@ class AnomalyDeserializerSpec extends FunSpec with Matchers {
         }
 
         it("should handle good anomaly data") {
-//            val anomalyJson = "{\"metricData\":{\"metricDefinition\":{\"key\":null,\"tags\":{\"kv\":{\"mtype\":\"rate\",\"operationName\":\"/foo\",\"unit\":\"someunit\",\"service\":\"testapp\"},\"v\":[],\"empty\":false},\"meta\":{\"kv\":{},\"v\":[],\"empty\":true}},\"value\":10.0,\"timestamp\":1544354976}}"
-//            val anomaly = deser.deserialize("", anomalyJson.getBytes("utf-8"))
-//            anomaly.timestamp shouldBe 1544354976l
-//            anomaly.tags.get("serviceName") shouldEqual "testapp"
-//            anomaly.tags.get("operationName") shouldEqual "/foo"
+            val anomalyJson = "{\"metricData\":{\"metricDefinition\":{\"key\":null,\"tags\":{\"kv\":{\"mtype\":\"rate\",\"operationName\":\"/foo\",\"unit\":\"someunit\",\"service\":\"testapp\"},\"v\":[],\"empty\":false},\"meta\":{\"kv\":{},\"v\":[],\"empty\":true}},\"value\":10.0,\"timestamp\":1544354976}}"
+            val anomaly = deser.deserialize("", anomalyJson.getBytes("utf-8"))
+            anomaly.timestamp shouldBe 1544354976l
+            anomaly.tags.get("service") shouldEqual "testapp"
+            anomaly.tags.get("operationName") shouldEqual "/foo"
         }
     }
 }

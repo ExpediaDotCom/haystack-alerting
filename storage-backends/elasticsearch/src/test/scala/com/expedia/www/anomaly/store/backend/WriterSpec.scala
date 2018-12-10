@@ -122,7 +122,7 @@ class WriterSpec extends FunSpec with GivenWhenThen with Matchers with BeforeAnd
         val indexBody: java.util.Map[String, Object] = request.sourceAsMap()
 
         indexBody.get(ElasticSearchStore.START_TIME).toString.toLong should be > ((System.currentTimeMillis() / 1000) - 30)
-        indexBody.get(ElasticSearchStore.LABELS).asInstanceOf[java.util.Map[String, String]].get("service") shouldEqual "svc1"
+        indexBody.get(ElasticSearchStore.TAGS).asInstanceOf[java.util.Map[String, String]].get("service") shouldEqual "svc1"
     }
 
     private def expectedIndexName: String = {

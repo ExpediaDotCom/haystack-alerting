@@ -24,7 +24,7 @@ object Reader {
 
   private def convertMapToAnomaly(sourceAsMap: java.util.Map[String, Object]): Anomaly = {
     val timestamp = sourceAsMap.get(START_TIME).toString.toLong
-    val labels = sourceAsMap.get(LABELS).asInstanceOf[java.util.Map[String, String]].asScala.toMap
+    val labels = sourceAsMap.get(TAGS).asInstanceOf[java.util.Map[String, String]].asScala.toMap
     Anomaly(labels.asJava, timestamp)
   }
 }
@@ -42,7 +42,7 @@ class Reader private[backend](client: RestHighLevelClient,
     val boolQuery = QueryBuilders.boolQuery
 
     labels.foreach {
-      case (key, value) => boolQuery.must(QueryBuilders.matchQuery(LABELS + '.' + key, value))
+      case (key, value) => boolQuery.must(QueryBuilders.matchQuery(TAGS + '.' + key, value))
     }
 
     boolQuery.must(new RangeQueryBuilder(START_TIME).gt(from).lt(to))

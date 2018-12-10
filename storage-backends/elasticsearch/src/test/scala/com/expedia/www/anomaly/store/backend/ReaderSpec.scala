@@ -35,7 +35,7 @@ class ReaderSpec extends FunSpec with Matchers with BeforeAndAfterEach {
   private var reader: Reader = _
   private val timestamp = 1544353485L
 
-  private val labels = Map("service" -> "svc1", "operation" -> "/foo")
+  private val _tags = Map("service" -> "svc1", "operation" -> "/foo")
 
   override def beforeEach(): Unit = {
     this.mockClient = EasyMock.mock(classOf[RestHighLevelClient])
@@ -59,7 +59,7 @@ class ReaderSpec extends FunSpec with Matchers with BeforeAndAfterEach {
 
       EasyMock.replay(mockClient)
       val expectWriteCallback =  new Array[Boolean](1)
-      reader.read(labels, timestamp - 10000, timestamp, 100, (_, ex) => {
+      reader.read(_tags, timestamp - 10000, timestamp, 100, (_, ex) => {
         if (ex == null) {
           fail("no exception is expected in searching alerts")
         }
@@ -76,7 +76,7 @@ class ReaderSpec extends FunSpec with Matchers with BeforeAndAfterEach {
 
       EasyMock.replay(mockClient)
       val expectWriteCallback =  new Array[Boolean](1)
-      reader.read(labels, timestamp - 10000, timestamp, 100, (anomalies, ex) => {
+      reader.read(_tags, timestamp - 10000, timestamp, 100, (anomalies, ex) => {
         if (ex != null) {
           fail("no exception is expected in searching alerts")
         }
@@ -100,7 +100,7 @@ class ReaderSpec extends FunSpec with Matchers with BeforeAndAfterEach {
         |      "must" : [
         |        {
         |          "match" : {
-        |            "labels.service" : {
+        |            "tags.service" : {
         |              "query" : "svc1",
         |              "operator" : "OR",
         |              "prefix_length" : 0,
@@ -114,7 +114,7 @@ class ReaderSpec extends FunSpec with Matchers with BeforeAndAfterEach {
         |        },
         |        {
         |          "match" : {
-        |            "labels.operation" : {
+        |            "tags.operation" : {
         |              "query" : "/foo",
         |              "operator" : "OR",
         |              "prefix_length" : 0,

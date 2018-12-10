@@ -27,12 +27,6 @@
         "startTime": {
           "type": "long",
           "doc_values": true
-        },
-        "observedValue": {
-          "enabled": false
-        },
-        "expectedValue": {
-          "enabled": false
         }
       },
       "dynamic_templates": [{

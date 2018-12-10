@@ -34,6 +34,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.expedia</groupId>
+            <artifactId>metrics-java-jackson</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-scala_${scala.major.minor.version}</artifactId>
         </dependency>

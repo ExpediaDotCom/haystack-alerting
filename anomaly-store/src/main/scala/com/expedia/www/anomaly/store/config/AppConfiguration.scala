@@ -80,6 +80,6 @@ class AppConfiguration(resourceName: String) {
       plugin.getString("directory"),
       plugin.getString("name"),
       plugin.getString("jar.name"),
-      plugin.getConfig("config"))
+      plugin.getConfig("conf"))
   }
 }

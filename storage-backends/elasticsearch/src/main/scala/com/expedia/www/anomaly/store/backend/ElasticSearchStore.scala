@@ -36,7 +36,7 @@ object ElasticSearchStore {
   private[backend] val START_TIME = "startTime"
   private[backend] val SERVICE_NAME = "serviceName"
   private[backend] val OPERATION_NAME = "operationName"
-  private[backend] val LABELS = "labels"
+  private[backend] val TAGS = "tags"
   private[backend] val DEFAULT_INDEX_PREFIX = "haystack-anomalies"
 }
 

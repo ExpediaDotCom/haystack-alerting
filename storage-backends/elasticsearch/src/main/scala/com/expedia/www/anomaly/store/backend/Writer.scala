@@ -84,7 +84,7 @@ class Writer private[backend](client: RestHighLevelClient,
       .jsonBuilder
       .startObject
       .field(START_TIME, anomaly.timestamp)
-      .field(LABELS, anomaly.tags)
+      .field(TAGS, anomaly.tags)
       .endObject
   }
 
