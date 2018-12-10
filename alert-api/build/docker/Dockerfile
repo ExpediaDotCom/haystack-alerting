@@ -1,7 +1,7 @@
 FROM openjdk:8-jre
 MAINTAINER Haystack <haystack@expedia.com>
 
-ENV APP_NAME haystack-subscription-manager
+ENV APP_NAME haystack-alert-api
 ENV APP_HOME /app/bin
 ENV JMXTRANS_AGENT jmxtrans-agent-1.2.6
 
