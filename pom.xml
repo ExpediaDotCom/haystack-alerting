@@ -76,9 +76,9 @@
     </developers>
 
     <modules>
+        <module>alert-api</module>
         <module>storage-backends</module>
         <module>anomaly-store</module>
-        <module>alert-api</module>
     </modules>
 
     <properties>
@@ -254,12 +254,6 @@
                     </exclusion>
                 </exclusions>
                 <version>${kafka-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-scala_${scala.major.minor.version}</artifactId>
-                <version>${jackson-module-scala.version}</version>
             </dependency>
 
             <!-- protobuf -->
