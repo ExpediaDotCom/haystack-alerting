@@ -64,7 +64,6 @@ class AppIntegrationSpec extends FunSpec with Matchers {
       Thread.sleep(10000)
       produceAnomaliesInKakfa()
 
-      print("produce done")
       // sleep for kafka to flush
       Thread.sleep(5000)
       verifyElasticSearchData()
@@ -93,10 +92,9 @@ class AppIntegrationSpec extends FunSpec with Matchers {
     val a1 = createAnomalyJson("svc1")
     val a2 = createAnomalyJson("svc2")
     List(a1, a2) foreach { a =>
-      producer.send(new ProducerRecord[String, Array[Byte]](KAFKA_TOPIC, "k1", a), new Callback {
-        override def onCompletion(metadata: RecordMetadata, exception: Exception): Unit = {
-          if (exception != null) Assert.fail("Fail to produce the message to kafka with error message " + exception.getMessage)
-        }})
+      producer.send(new ProducerRecord[String, Array[Byte]](KAFKA_TOPIC, "k1", a), (metadata: RecordMetadata, exception: Exception) => {
+        if (exception != null) Assert.fail("Fail to produce the message to kafka with error message " + exception.getMessage)
+      })
     }
     producer.flush()
   }
