@@ -45,8 +45,8 @@ class AppConfigurationSpec extends FunSpec with Matchers {
             appConfig.healthStatusFilePath shouldEqual "/tmp/health.status"
 
             val pluginConfig = appConfig.pluginConfig
-            pluginConfig.directory shouldEqual "storage-backends/elasticsearch/target"
-            pluginConfig.jarName shouldEqual "elasticsearch-store-1.0.0-SNAPSHOT.jar"
+            pluginConfig.directory shouldEqual "../storage-backends/elasticsearch/target"
+            pluginConfig.jarName shouldEqual "elasticsearch-store.jar"
             pluginConfig.name shouldEqual "elasticsearch"
             pluginConfig.conf.entrySet().toString shouldEqual "[host=Quoted(\"http://localhost:9200\")]"
         }

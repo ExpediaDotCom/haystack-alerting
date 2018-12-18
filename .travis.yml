@@ -15,6 +15,12 @@ env:
     - TAG=${TRAVIS_TAG}
     - SHA=${TRAVIS_COMMIT}
 
+addons:
+  hosts:
+    - elasticsearch
+    - kafkasvc
+    - zookeeper
+
 cache:
   directories:
     - $HOME/.m2

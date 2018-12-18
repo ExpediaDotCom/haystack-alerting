@@ -16,7 +16,6 @@
 
 package com.expedia.www.anomaly.store
 
-import java.util
 import java.util.Properties
 import java.util.concurrent.Executors
 
@@ -27,7 +26,7 @@ import com.expedia.www.anomaly.store.serde.AnomalyResult
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.http.HttpHost
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
+import org.apache.kafka.clients.producer._
 import org.apache.kafka.common.serialization.{ByteArraySerializer, StringSerializer}
 import org.elasticsearch.action.search.SearchRequest
 import org.elasticsearch.client.{RestClient, RestHighLevelClient}
@@ -93,17 +92,17 @@ class AppIntegrationSpec extends FunSpec with Matchers {
     val a1 = createAnomalyJson("svc1")
     val a2 = createAnomalyJson("svc2")
     List(a1, a2) foreach { a =>
-      producer.send(new ProducerRecord[String, Array[Byte]](KAFKA_TOPIC, "k1", a), (_, e) => {
-        if (e != null) Assert.fail("Fail to produce the message to kafka with error message " + e.getMessage)
+      producer.send(new ProducerRecord[String, Array[Byte]](KAFKA_TOPIC, "k1", a), (metadata: RecordMetadata, exception: Exception) => {
+        if (exception != null) Assert.fail("Fail to produce the message to kafka with error message " + exception.getMessage)
       })
     }
     producer.flush()
   }
 
   private def createAnomalyJson(serviceName: String): Array[Byte] = {
-    val tags = Map(SERVICE_TAG_KEY -> serviceName, OPERATION_TAG_KEY -> "/foo").asJava
+    val tags = Map(SERVICE_TAG_KEY -> serviceName, OPERATION_TAG_KEY -> "/foo", MetricDefinition.MTYPE -> "gauge", MetricDefinition.UNIT -> "microseconds").asJava
     val tagCollection = new TagCollection(tags)
-    val metricDef = new MetricDefinition(tagCollection)
+    val metricDef = new MetricDefinition("duration", tagCollection, TagCollection.EMPTY)
     val metricData = new MetricData(metricDef, 100.2, currentTimeSec)
     mapper.writeValueAsBytes(AnomalyResult(metricData))
   }
