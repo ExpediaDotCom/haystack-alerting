@@ -1,4 +1,4 @@
-.PHONY: integration_test release
+.PHONY: integration_test release all
 
 MAVEN := ../mvnw
 export DOCKER_ORG := expediadotcom
@@ -9,7 +9,9 @@ docker_build: copy_backend_jars
 
 copy_backend_jars:
 	mkdir -p storage-backends
-	cp ../storage-backends/elasticsearch/target/elasticsearch-store-1.0.0-SNAPSHOT.jar storage-backends/elasticsearch-store.jar
+	cp ../storage-backends/elasticsearch/target/elasticsearch-store.jar storage-backends/elasticsearch-store.jar
+
+all: integration_test
 
 integration_test: docker_build
 	docker-compose -f docker/docker-compose.yaml up -d

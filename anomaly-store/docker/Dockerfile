@@ -7,7 +7,7 @@ ENV JMXTRANS_AGENT jmxtrans-agent-1.2.6
 RUN mkdir -p ${APP_HOME}
 RUN mkdir -p ${APP_HOME}/storage-backends
 
-COPY target/anomaly-store-1.0.0-SNAPSHOT.jar ${APP_HOME}/anomaly-store.jar
+COPY target/haystack-anomaly-store.jar ${APP_HOME}/anomaly-store.jar
 COPY storage-backends ${APP_HOME}/storage-backends
 COPY docker/start-app.sh ${APP_HOME}/
 COPY docker/jmxtrans-agent.xml ${APP_HOME}/
