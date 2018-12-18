@@ -72,7 +72,7 @@ class AppIntegrationSpec extends FunSpec with Matchers {
   }
 
   private def verifyElasticSearchData() = {
-    val client = new RestHighLevelClient(RestClient.builder(HttpHost.create("http://localhost:9200")))
+    val client = new RestHighLevelClient(RestClient.builder(HttpHost.create("http://elasticsearch:9200")))
     for (svc <- List("svc1", "svc2")) {
       val sourceBuilder = new SearchSourceBuilder
       val boolQuery = QueryBuilders.boolQuery.must(QueryBuilders.matchQuery("tags." + SERVICE_TAG_KEY, svc))
