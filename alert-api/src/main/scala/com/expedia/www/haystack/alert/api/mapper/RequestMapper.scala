@@ -55,8 +55,7 @@ object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
 
   def mapSearchSubscriptionRequest(request: SearchSubscriptionRequest) : model.SearchSubscriptionRequest = {
     val searchSubscriptionRequest = new model.SearchSubscriptionRequest()
-    //TODO fix this
-    searchSubscriptionRequest.setUserId(request.getSubscriptionId)
+    searchSubscriptionRequest.setUserId(request.getUser.getUsername)
     searchSubscriptionRequest.setLabels(request.getLabelsMap)
     searchSubscriptionRequest
   }
