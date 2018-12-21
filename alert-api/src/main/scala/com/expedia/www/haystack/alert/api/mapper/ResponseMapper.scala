@@ -17,13 +17,14 @@
 
 package com.expedia.www.haystack.alert.api.mapper
 
+import com.expedia.alertmanager._
 import com.expedia.open.tracing.api.subscription._
 
 import scala.collection.JavaConverters._
 
 object ResponseMapper extends AlertDispatcherMapper with ExpressionTreeMapper {
 
-  def mapSearchSubscriptionResponse(response: Option[List[com.expedia.alertmanager.model.SubscriptionResponse]]): SearchSubscriptionResponse = {
+  def mapSearchSubscriptionResponse(response: Option[List[model.SubscriptionResponse]]): SearchSubscriptionResponse = {
     if (response.isDefined) {
       val searchSubscriptionResponses: List[SubscriptionResponse] = response.get.map(mapSubscriptionResponse(_))
       SearchSubscriptionResponse.newBuilder().addAllSubscriptionResponse(searchSubscriptionResponses.asJava).build()
@@ -32,7 +33,7 @@ object ResponseMapper extends AlertDispatcherMapper with ExpressionTreeMapper {
     }
   }
 
-  def mapSubscriptionResponse(response: com.expedia.alertmanager.model.SubscriptionResponse): SubscriptionResponse = {
+  def mapSubscriptionResponse(response: model.SubscriptionResponse): SubscriptionResponse = {
     val subscriptionResponseBuilder = SubscriptionResponse.newBuilder()
     subscriptionResponseBuilder.setSubscriptionId(response.getId)
     subscriptionResponseBuilder.setUser(User.newBuilder().setUsername(response.getUser.getId))
@@ -43,18 +44,18 @@ object ResponseMapper extends AlertDispatcherMapper with ExpressionTreeMapper {
     subscriptionResponseBuilder.build()
   }
 
-  def getFieldOperand(field: com.expedia.alertmanager.model.Field): Operand = {
+  def getFieldOperand(field: model.Field): Operand = {
     val operandField = Field.newBuilder().setName(field.getKey).setValue(field.getValue).build()
     Operand.newBuilder().setField(operandField).build()
   }
 
-  def getExpressionTree(expressionTree: com.expedia.alertmanager.model.ExpressionTree): ExpressionTree = {
+  def getExpressionTree(expressionTree: model.ExpressionTree): ExpressionTree = {
     val expressionBuilder = ExpressionTree.newBuilder()
 
     val operands = expressionTree.getOperands.asScala.map(operand => {
       operand.getExpression match {
         case null => getFieldOperand(operand.getField)
-        case expression: com.expedia.alertmanager.model.ExpressionTree =>
+        case expression: model.ExpressionTree =>
           Operand.newBuilder().setExpression(getExpressionTree(expression)).build()
       }
     }).toList

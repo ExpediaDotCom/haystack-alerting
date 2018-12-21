@@ -17,26 +17,24 @@
 
 package com.expedia.www.haystack.alert.api.client
 
+import com.expedia.www.haystack.alert.api.client.AsyncHttpClient.getRequestConfig
 import com.expedia.www.haystack.alert.api.config.entities.ClientConfiguration
 import org.apache.http.HttpResponse
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods._
 import org.apache.http.concurrent.FutureCallback
 import org.apache.http.entity.ByteArrayEntity
-import org.apache.http.impl.nio.client.HttpAsyncClients
+import org.apache.http.impl.nio.client.{CloseableHttpAsyncClient, HttpAsyncClients}
 
 import scala.concurrent.{ExecutionContextExecutor, Future, Promise}
 
-class AsyncHttpClient(clientConfiguration: ClientConfiguration)(implicit val executor: ExecutionContextExecutor) {
+class AsyncHttpClient(httpClient : CloseableHttpAsyncClient)(implicit val executor: ExecutionContextExecutor) {
 
-  val requestConfig = RequestConfig.custom()
-    .setSocketTimeout(clientConfiguration.socketTimeout)
-    .setConnectTimeout(clientConfiguration.connectionTimeout)
-    .build()
+  def this(clientConfiguration: ClientConfiguration)(implicit executor: ExecutionContextExecutor) {
+    this(HttpAsyncClients.custom().setDefaultRequestConfig(getRequestConfig(clientConfiguration)).build())
+  }
 
-  private val httpClient = HttpAsyncClients.custom().setDefaultRequestConfig(requestConfig).build()
   httpClient.start()
-
 
   def executePost(url: String, contentType: String, content: Array[Byte]): Future[HttpResponse] = {
     val httpPost = new HttpPost(url)
@@ -78,7 +76,7 @@ class AsyncHttpClient(clientConfiguration: ClientConfiguration)(implicit val exe
   }
 
 
-  private def executeRequest(httpRequestBase: HttpRequestBase, promise: Promise[HttpResponse]) = {
+  private def executeRequest(httpRequestBase: HttpRequestBase, promise: Promise[HttpResponse])  = {
     httpClient.execute(httpRequestBase, new FutureCallback[HttpResponse] {
       override def completed(t: HttpResponse): Unit = {
         promise.success(t)
@@ -95,4 +93,14 @@ class AsyncHttpClient(clientConfiguration: ClientConfiguration)(implicit val exe
   }
 
 
+}
+
+object AsyncHttpClient {
+
+  def getRequestConfig(clientConfiguration: ClientConfiguration): RequestConfig = {
+    RequestConfig.custom()
+      .setSocketTimeout(clientConfiguration.socketTimeout)
+      .setConnectTimeout(clientConfiguration.connectionTimeout)
+      .build()
+  }
 }

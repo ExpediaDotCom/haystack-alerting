@@ -17,14 +17,15 @@
 
 package com.expedia.www.haystack.alert.api.mapper
 
+import com.expedia.alertmanager._
 import com.expedia.open.tracing.api.subscription.{DispatchType, Dispatcher}
 
 trait AlertDispatcherMapper {
 
 
-  def mapAlertDispatcher(dispatchers: List[Dispatcher]): List[com.expedia.alertmanager.model.Dispatcher] = {
+  def mapAlertDispatcher(dispatchers: List[Dispatcher]): List[model.Dispatcher] = {
     dispatchers.map(dispatcher => {
-      val alertDispatcher = new com.expedia.alertmanager.model.Dispatcher
+      val alertDispatcher = new model.Dispatcher
       alertDispatcher.setEndpoint(dispatcher.getEndpoint)
       alertDispatcher.setType(getDispatcherType(dispatcher.getType))
       alertDispatcher
@@ -32,23 +33,23 @@ trait AlertDispatcherMapper {
   }
 
   //TODO change name
-  def getDispatchers(dispatchers: List[com.expedia.alertmanager.model.Dispatcher]): List[Dispatcher] = {
+  def getDispatchers(dispatchers: List[model.Dispatcher]): List[Dispatcher] = {
     dispatchers.map(dispatcher => {
       Dispatcher.newBuilder().setEndpoint(dispatcher.getEndpoint).setType(getDispatcherType(dispatcher.getType)).build()
     })
   }
 
-  private def getDispatcherType(dispatchType: DispatchType): com.expedia.alertmanager.model.Dispatcher.Type = {
+  private def getDispatcherType(dispatchType: DispatchType): model.Dispatcher.Type = {
     dispatchType match {
-      case DispatchType.EMAIL => com.expedia.alertmanager.model.Dispatcher.Type.EMAIL
-      case DispatchType.SLACK => com.expedia.alertmanager.model.Dispatcher.Type.SLACK
+      case DispatchType.EMAIL => model.Dispatcher.Type.EMAIL
+      case DispatchType.SLACK => model.Dispatcher.Type.SLACK
     }
   }
 
-  private def getDispatcherType(dispatchType: com.expedia.alertmanager.model.Dispatcher.Type): DispatchType = {
+  private def getDispatcherType(dispatchType: model.Dispatcher.Type): DispatchType = {
     dispatchType match {
-      case com.expedia.alertmanager.model.Dispatcher.Type.EMAIL => DispatchType.EMAIL
-      case com.expedia.alertmanager.model.Dispatcher.Type.SLACK => DispatchType.SLACK
+      case model.Dispatcher.Type.EMAIL => DispatchType.EMAIL
+      case model.Dispatcher.Type.SLACK => DispatchType.SLACK
     }
   }
 

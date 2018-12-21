@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "DELETE",
+    "url": "/subscriptions/1"
+  },
+  "response": {
+    "status": 200,
+    "body": ""
+  }
+}
