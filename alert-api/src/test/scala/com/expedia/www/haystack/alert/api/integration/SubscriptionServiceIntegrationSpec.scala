@@ -17,9 +17,12 @@
 
 package com.expedia.www.haystack.alert.api.integration
 
+import com.expedia.www.haystack.alert.api.IntegrationSuite
 import io.grpc.health.v1.{HealthCheckRequest, HealthCheckResponse}
+
 import scala.collection.JavaConverters._
 
+@IntegrationSuite
 class SubscriptionServiceIntegrationSpec extends BasicIntegrationTestSpec {
 
   "Subscription Service Spec" should {
