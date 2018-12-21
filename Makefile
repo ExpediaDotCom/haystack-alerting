@@ -30,7 +30,7 @@ anomaly_store:
 	$(MAKE) -C anomaly-store all
 
 # build all and release
-release: clean build_alert_api build_anomaly_store
+release: clean build_alert_api build_storage_backends build_anomaly_store
 	cd alert-api && $(MAKE) release
 	cd anomaly-store && $(MAKE) release
 	./.travis/deploy.sh
