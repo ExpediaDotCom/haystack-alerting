@@ -17,6 +17,7 @@
 
 package com.expedia.www.haystack.alert.api.mapper
 
+import com.expedia.alertmanager._
 import com.expedia.alertmanager.model.User
 import com.expedia.open.tracing.api.subscription._
 
@@ -24,8 +25,8 @@ import scala.collection.JavaConverters._
 
 object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
 
-  def mapCreateSubscriptionRequest(request: CreateSubscriptionRequest): com.expedia.alertmanager.model.CreateSubscriptionRequest = {
-    val createSubscriptionRequest = new com.expedia.alertmanager.model.CreateSubscriptionRequest()
+  def mapCreateSubscriptionRequest(request: CreateSubscriptionRequest): model.CreateSubscriptionRequest = {
+    val createSubscriptionRequest = new model.CreateSubscriptionRequest()
     val user = new User
     user.setId(request.getUser.getUsername)
     createSubscriptionRequest.setUser(user)
@@ -35,8 +36,8 @@ object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
     createSubscriptionRequest
   }
 
-  def mapUpdateSubscriptionRequest(request : UpdateSubscriptionRequest) : com.expedia.alertmanager.model.UpdateSubscriptionRequest = {
-    val updateSubscriptionRequest = new com.expedia.alertmanager.model.UpdateSubscriptionRequest()
+  def mapUpdateSubscriptionRequest(request : UpdateSubscriptionRequest) : model.UpdateSubscriptionRequest = {
+    val updateSubscriptionRequest = new model.UpdateSubscriptionRequest()
     updateSubscriptionRequest.setId(request.getSubscriptionId)
     val alertDispatchers = mapAlertDispatcher(request.getSubscriptionRequest.getDispatchersList.asScala.toList)
     updateSubscriptionRequest.setDispatchers(alertDispatchers.asJava)
@@ -52,8 +53,8 @@ object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
     request.getSubscriptionId
   }
 
-  def mapSearchSubscriptionRequest(request: SearchSubscriptionRequest) : com.expedia.alertmanager.model.SearchSubscriptionRequest = {
-    val searchSubscriptionRequest = new com.expedia.alertmanager.model.SearchSubscriptionRequest()
+  def mapSearchSubscriptionRequest(request: SearchSubscriptionRequest) : model.SearchSubscriptionRequest = {
+    val searchSubscriptionRequest = new model.SearchSubscriptionRequest()
     //TODO fix this
     searchSubscriptionRequest.setUserId(request.getSubscriptionId)
     searchSubscriptionRequest.setLabels(request.getLabelsMap)

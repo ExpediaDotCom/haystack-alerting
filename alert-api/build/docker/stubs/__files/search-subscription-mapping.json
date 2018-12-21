@@ -1,0 +1,1 @@
+[{"expression":{"operator":"AND","operands":[{"field":{"key":"product","value":"haystack"}}]},"dispatchers":[{"type":"SLACK","endpoint":"haystack"}],"id":"1","user":{"id":"haystack"},"lastModifiedTime":2,"createdTime":1}]

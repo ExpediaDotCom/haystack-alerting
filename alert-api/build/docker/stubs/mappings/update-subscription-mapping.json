@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "PUT",
+    "url": "/subscriptions"
+  },
+  "response": {
+    "status": 200,
+    "body": ""
+  }
+}

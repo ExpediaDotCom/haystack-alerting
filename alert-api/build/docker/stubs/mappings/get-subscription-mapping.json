@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/subscriptions/1"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-subscription-mapping.json"
+  }
+}

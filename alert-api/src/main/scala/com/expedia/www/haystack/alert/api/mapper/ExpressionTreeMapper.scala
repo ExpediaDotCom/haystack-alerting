@@ -17,6 +17,7 @@
 
 package com.expedia.www.haystack.alert.api.mapper
 
+import com.expedia.alertmanager._
 import com.expedia.alertmanager.model.{Field, Operand}
 import com.expedia.open.tracing.api.subscription
 import com.expedia.open.tracing.api.subscription.ExpressionTree
@@ -34,8 +35,8 @@ trait ExpressionTreeMapper {
     alertOperand
   }
 
-  def mapExpressionTree(expressionTree: ExpressionTree): com.expedia.alertmanager.model.ExpressionTree = {
-    val expression = new com.expedia.alertmanager.model.ExpressionTree()
+  def mapExpressionTree(expressionTree: ExpressionTree): model.ExpressionTree = {
+    val expression = new model.ExpressionTree()
 
     val operands: List[Operand] = expressionTree.getOperandsList.asScala.map(operand => {
       operand.getOperandCase match {
@@ -53,17 +54,17 @@ trait ExpressionTreeMapper {
   }
 
 
-  def getOperator(operator: ExpressionTree.Operator): com.expedia.alertmanager.model.Operator = {
+  def getOperator(operator: ExpressionTree.Operator): model.Operator = {
     operator match {
-      case ExpressionTree.Operator.AND => com.expedia.alertmanager.model.Operator.AND
-      case ExpressionTree.Operator.OR => com.expedia.alertmanager.model.Operator.OR
+      case ExpressionTree.Operator.AND => model.Operator.AND
+      case ExpressionTree.Operator.OR => model.Operator.OR
     }
   }
 
-  def getOperator(operator: com.expedia.alertmanager.model.Operator): ExpressionTree.Operator = {
+  def getOperator(operator: model.Operator): ExpressionTree.Operator = {
     operator match {
-      case com.expedia.alertmanager.model.Operator.AND => ExpressionTree.Operator.AND
-      case com.expedia.alertmanager.model.Operator.OR  => ExpressionTree.Operator.OR
+      case model.Operator.AND => ExpressionTree.Operator.AND
+      case model.Operator.OR  => ExpressionTree.Operator.OR
     }
   }
 

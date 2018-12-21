@@ -17,6 +17,7 @@
 
 package com.expedia.www.haystack.alert.api.manager
 
+import com.expedia.alertmanager._
 import com.expedia.open.tracing.api.subscription._
 import com.expedia.www.haystack.alert.api.client.AsyncHttpClient
 import com.expedia.www.haystack.alert.api.config.AppConfiguration
@@ -28,19 +29,20 @@ import org.apache.http.util.EntityUtils
 import scala.concurrent.duration.{FiniteDuration, _}
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
-class SubscriptionManager(appConfiguration: AppConfiguration)(implicit val executor: ExecutionContextExecutor) extends RetryOnError {
+class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncHttpClient)(implicit val executor: ExecutionContextExecutor) extends RetryOnError {
 
   private val CONTENT_TYPE = "application/json"
   private val SEARCH_SUBSCRIPTION_SUFFIX = "/search"
-  val httpClient = new AsyncHttpClient(appConfiguration.clientConfig)
   val jacksonJsonSerde = new JacksonJsonSerde
   val subscriptionBaseUrl = appConfiguration.subscriptionConfig.baseUrl
   val retryDuration: FiniteDuration = appConfiguration.subscriptionConfig.retryInSeconds.seconds
   val numberOfRetries = appConfiguration.subscriptionConfig.numOfRetries
 
+  def this(appConfiguration: AppConfiguration)(implicit executor: ExecutionContextExecutor) = {
+    this(appConfiguration, new AsyncHttpClient(appConfiguration.clientConfig))
+  }
 
   def createSubscriptionRequest(request: CreateSubscriptionRequest): Future[CreateSubscriptionResponse] = {
-
     val createSubscriptionRequest = RequestMapper.mapCreateSubscriptionRequest(request)
 
     retry(retryDuration, numberOfRetries) {
@@ -68,7 +70,6 @@ class SubscriptionManager(appConfiguration: AppConfiguration)(implicit val execu
         if (statusCode >= 200 && statusCode <= 299) {
           Empty.newBuilder().build()
         } else {
-          //TODO add log statement & timer and count
           throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
         }
       })
@@ -84,7 +85,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration)(implicit val execu
         val statusCode = response.getStatusLine.getStatusCode
         if (statusCode >= 200 && statusCode <= 299) {
           //TODO fix option
-          val searchSubscriptionResponse = jacksonJsonSerde.deserialize[List[com.expedia.alertmanager.model.SubscriptionResponse]](EntityUtils.toByteArray(response.getEntity))
+          val searchSubscriptionResponse = jacksonJsonSerde.deserialize[List[ model.SubscriptionResponse]](EntityUtils.toByteArray(response.getEntity))
           ResponseMapper.mapSearchSubscriptionResponse(searchSubscriptionResponse)
         } else {
           throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
@@ -101,7 +102,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration)(implicit val execu
       val statusCode = response.getStatusLine.getStatusCode
       if (statusCode >= 200 && statusCode <= 299) {
         //TODO fix option
-        val subscriptionResponse = jacksonJsonSerde.deserialize[com.expedia.alertmanager.model.SubscriptionResponse](EntityUtils.toByteArray(response.getEntity)).get
+        val subscriptionResponse = jacksonJsonSerde.deserialize[model.SubscriptionResponse](EntityUtils.toByteArray(response.getEntity)).get
         ResponseMapper.mapSubscriptionResponse(subscriptionResponse)
       } else {
         throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")

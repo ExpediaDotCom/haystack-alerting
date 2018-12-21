@@ -1,0 +1,8 @@
+version: '3'
+services:
+   wiremock:
+    image: rodolpheche/wiremock
+    ports:
+    - "8500:8080"
+    volumes:
+    - ./stubs:/home/wiremock/

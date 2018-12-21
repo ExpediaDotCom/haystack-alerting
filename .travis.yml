@@ -20,6 +20,7 @@ addons:
     - elasticsearch
     - kafkasvc
     - zookeeper
+    - wiremock
 
 cache:
   directories:
