@@ -55,6 +55,11 @@ trait SubscriptionManagerSpec extends BasicUnitTestSpec {
     dispatcher.setType(model.Dispatcher.Type.SLACK)
     val dispatchers = List(dispatcher).asJava
     subscriptionResponse.setDispatchers(dispatchers)
+    subscriptionResponse.setExpression(getSubscriptionResponseExpressionTree)
+    subscriptionResponse
+  }
+
+  def getSubscriptionResponseExpressionTree: model.ExpressionTree = {
     val expressionTree = new model.ExpressionTree()
     expressionTree.setOperator(model.Operator.AND)
     val field1 = new model.Field()
@@ -63,8 +68,7 @@ trait SubscriptionManagerSpec extends BasicUnitTestSpec {
     val operand = new model.Operand()
     operand.setField(field1)
     expressionTree.setOperands(List(operand).asJava)
-    subscriptionResponse.setExpression(expressionTree)
-    subscriptionResponse
+    expressionTree
   }
 
 }

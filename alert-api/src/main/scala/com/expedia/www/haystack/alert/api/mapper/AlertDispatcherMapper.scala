@@ -22,7 +22,6 @@ import com.expedia.open.tracing.api.subscription.{DispatchType, Dispatcher}
 
 trait AlertDispatcherMapper {
 
-
   def mapAlertDispatcher(dispatchers: List[Dispatcher]): List[model.Dispatcher] = {
     dispatchers.map(dispatcher => {
       val alertDispatcher = new model.Dispatcher
@@ -32,15 +31,14 @@ trait AlertDispatcherMapper {
     })
   }
 
-  //TODO change name
-  def getDispatchers(dispatchers: List[model.Dispatcher]): List[Dispatcher] = {
+  def mapDispatchers(dispatchers: List[model.Dispatcher]): List[Dispatcher] = {
     dispatchers.map(dispatcher => {
       Dispatcher.newBuilder().setEndpoint(dispatcher.getEndpoint).setType(getDispatcherType(dispatcher.getType)).build()
     })
   }
 
   private def getDispatcherType(dispatchType: DispatchType): model.Dispatcher.Type = {
-    dispatchType match {
+    (dispatchType: @unchecked) match {
       case DispatchType.EMAIL => model.Dispatcher.Type.EMAIL
       case DispatchType.SLACK => model.Dispatcher.Type.SLACK
     }

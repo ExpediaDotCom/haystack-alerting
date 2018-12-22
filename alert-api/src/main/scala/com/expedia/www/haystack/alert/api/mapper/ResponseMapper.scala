@@ -37,7 +37,7 @@ object ResponseMapper extends AlertDispatcherMapper with ExpressionTreeMapper {
     val subscriptionResponseBuilder = SubscriptionResponse.newBuilder()
     subscriptionResponseBuilder.setSubscriptionId(response.getId)
     subscriptionResponseBuilder.setUser(User.newBuilder().setUsername(response.getUser.getId))
-    subscriptionResponseBuilder.addAllDispatchers(getDispatchers(response.getDispatchers.asScala.toList).asJava)
+    subscriptionResponseBuilder.addAllDispatchers(mapDispatchers(response.getDispatchers.asScala.toList).asJava)
     subscriptionResponseBuilder.setExpressionTree(getExpressionTree(response.getExpression))
     subscriptionResponseBuilder.setLastModifiedTime(response.getLastModifiedTime)
     subscriptionResponseBuilder.setCreatedTime(response.getCreatedTime)

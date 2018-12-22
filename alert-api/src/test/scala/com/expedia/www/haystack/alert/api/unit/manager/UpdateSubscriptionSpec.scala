@@ -141,10 +141,8 @@ class UpdateSubscriptionSpec extends SubscriptionManagerSpec {
   }
 
   private def getValidUpdateSubscriptionRequest: UpdateSubscriptionRequest = {
-    val field1 = Field.newBuilder().setName("product").setValue("haystack").build()
-    val field2 = Field.newBuilder().setName("serviceName").setValue("abc").build()
-    val operand1 = Operand.newBuilder().setField(field1).build()
-    val operand2 = Operand.newBuilder().setField(field2).build()
+    val operand1 = Operand.newBuilder().setExpression(getExpressionTree).build()
+    val operand2 = Operand.newBuilder().setExpression(getExpressionTree).build()
 
     val expressionTree = ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
       .addAllOperands(List(operand1, operand2).asJava).build()
@@ -158,16 +156,19 @@ class UpdateSubscriptionSpec extends SubscriptionManagerSpec {
 
 
   private def getInvalidUpdateSubscriptionRequest: UpdateSubscriptionRequest = {
+    val subscriptionRequest = SubscriptionRequest.newBuilder().setExpressionTree(getExpressionTree).build()
+    UpdateSubscriptionRequest.newBuilder().setSubscriptionId("2")
+      .setSubscriptionRequest(subscriptionRequest).build()
+  }
+
+
+  private def getExpressionTree : ExpressionTree = {
     val field1 = Field.newBuilder().setName("product").setValue("haystack").build()
     val field2 = Field.newBuilder().setName("serviceName").setValue("abc").build()
     val operand1 = Operand.newBuilder().setField(field1).build()
     val operand2 = Operand.newBuilder().setField(field2).build()
 
-    val expressionTree = ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
+    ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
       .addAllOperands(List(operand1, operand2).asJava).build()
-
-    val subscriptionRequest = SubscriptionRequest.newBuilder().setExpressionTree(expressionTree).build()
-    UpdateSubscriptionRequest.newBuilder().setSubscriptionId("2")
-      .setSubscriptionRequest(subscriptionRequest).build()
   }
 }

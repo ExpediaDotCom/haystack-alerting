@@ -39,7 +39,7 @@ trait ExpressionTreeMapper {
     val expression = new model.ExpressionTree()
 
     val operands: List[Operand] = expressionTree.getOperandsList.asScala.map(operand => {
-      operand.getOperandCase match {
+      (operand.getOperandCase: @unchecked) match {
         case com.expedia.open.tracing.api.subscription.Operand.OperandCase.EXPRESSION => {
           val op = new Operand()
           op.setExpression(mapExpressionTree(operand.getExpression))
@@ -55,14 +55,14 @@ trait ExpressionTreeMapper {
 
 
   def getOperator(operator: ExpressionTree.Operator): model.Operator = {
-    operator match {
+    (operator: @unchecked) match {
       case ExpressionTree.Operator.AND => model.Operator.AND
       case ExpressionTree.Operator.OR => model.Operator.OR
     }
   }
 
   def getOperator(operator: model.Operator): ExpressionTree.Operator = {
-    operator match {
+    (operator: @unchecked) match {
       case model.Operator.AND => ExpressionTree.Operator.AND
       case model.Operator.OR  => ExpressionTree.Operator.OR
     }
