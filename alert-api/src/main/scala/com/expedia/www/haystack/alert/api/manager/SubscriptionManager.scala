@@ -84,7 +84,6 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
       .map(response => {
         val statusCode = response.getStatusLine.getStatusCode
         if (statusCode >= 200 && statusCode <= 299) {
-          //TODO fix option
           val searchSubscriptionResponse = jacksonJsonSerde.deserialize[List[ model.SubscriptionResponse]](EntityUtils.toByteArray(response.getEntity))
           ResponseMapper.mapSearchSubscriptionResponse(searchSubscriptionResponse)
         } else {
@@ -101,7 +100,6 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
     }.map(response => {
       val statusCode = response.getStatusLine.getStatusCode
       if (statusCode >= 200 && statusCode <= 299) {
-        //TODO fix option
         val subscriptionResponse = jacksonJsonSerde.deserialize[model.SubscriptionResponse](EntityUtils.toByteArray(response.getEntity)).get
         ResponseMapper.mapSubscriptionResponse(subscriptionResponse)
       } else {
@@ -118,7 +116,6 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
     }.map(response => {
       val statusCode = response.getStatusLine.getStatusCode
       if (statusCode >= 200 && statusCode <= 299) {
-        //TODO fix option
         Empty.newBuilder().build()
       } else {
         throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
