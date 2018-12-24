@@ -1,39 +1,23 @@
 <jmxtrans-agent>
     <queries>
-        <!-- JVM -->
-        <query objectName="java.lang:type=Memory" attribute="HeapMemoryUsage" key="used" resultAlias="jvm.heapMemoryUsage.used"/>
-        <query objectName="java.lang:type=Memory" attribute="HeapMemoryUsage" key="committed" resultAlias="jvm.heapMemoryUsage.committed"/>
-        <query objectName="java.lang:type=Memory" attribute="NonHeapMemoryUsage" key="used" resultAlias="jvm.nonHeapMemoryUsage.used"/>
-        <query objectName="java.lang:type=Memory" attribute="NonHeapMemoryUsage" key="committed" resultAlias="jvm.nonHeapMemoryUsage.committed"/>
-
-        <!-- useG1GC metrics -->
-<!--
-        <query objectName="java.lang:type=MemoryPool,name=G1 Eden Space" attribute="Usage" key="used"
-               resultAlias="jvm.g1EdenSpace.used" />
-        <query objectName="java.lang:type=MemoryPool,name=G1 Eden Space" attribute="Usage" key="max"
-               resultAlias="jvm.g1EdenSpace.max" />
--->
-        <query objectName="java.lang:type=MemoryPool,name=G1 Old Gen" attribute="Usage" key="used"
-               resultAlias="jvm.g1OldGen.used" />
-        <query objectName="java.lang:type=MemoryPool,name=G1 Old Gen" attribute="Usage" key="max"
-               resultAlias="jvm.g1OldGen.max" />
-
-        <query objectName="java.lang:type=MemoryPool,name=G1 Survivor Space" attribute="Usage" key="max"
-               resultAlias="jvm.g1SurvivorSpace.max" />
-        <query objectName="java.lang:type=MemoryPool,name=G1 Survivor Space" attribute="Usage" key="used"
-               resultAlias="jvm.g1SurvivorSpace.used" />
-
-        <query objectName="java.lang:type=GarbageCollector" attribute="LastGcInfo" key="duration"
-               resultAlias="jvm.gc.duration" />
-        <query objectName="java.lang:type=GarbageCollector" attribute="CollectionTime"
-               resultAlias="jvm.gc.collection.time" />
+        <!-- subscription endpoint metrics -->
+        <query objectName="metrics:name=SubscriptionManagement.createSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.createSubscription.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.createSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.createSubscription.failures.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.updateSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.updateSubscription.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.updateSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.updateSubscription.failures.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.deleteSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.deleteSubscription.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.deleteSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.deleteSubscription.failures.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.getSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.getSubscription.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.getSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.getSubscription.failures.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.searchSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.searchSubscription.#attribute#"/>
+        <query objectName="metrics:name=SubscriptionManagement.searchSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.searchSubscription.failures.#attribute#"/>
 
     </queries>
     <outputWriter class="org.jmxtrans.agent.GraphitePlainTextTcpOutputWriter">
         <host>${HAYSTACK_GRAPHITE_HOST:monitoring-influxdb-graphite.kube-system.svc}</host>
         <port>${HAYSTACK_GRAPHITE_PORT:2003}</port>
         <enabled>${HAYSTACK_GRAPHITE_ENABLED:true}</enabled>
-        <namePrefix>haystack.trends.span-transformer.#hostname#.</namePrefix>
+        <namePrefix>haystack.alerts.alert-api.#hostname#.</namePrefix>
     </outputWriter>
     <collectIntervalInSeconds>60</collectIntervalInSeconds>
 </jmxtrans-agent>
