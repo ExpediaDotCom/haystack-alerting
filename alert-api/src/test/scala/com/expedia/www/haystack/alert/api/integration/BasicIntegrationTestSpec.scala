@@ -17,39 +17,64 @@
 
 package com.expedia.www.haystack.alert.api.integration
 
+import java.time.Instant
 import java.util.concurrent.Executors
 
-import com.expedia.open.tracing.api.subscription._
+import com.expedia.open.tracing.api.anomaly.AnomalyReaderGrpc.AnomalyReaderBlockingStub
+import com.expedia.open.tracing.api.anomaly.{AnomalyReaderGrpc, SearchAnamoliesRequest}
 import com.expedia.open.tracing.api.subscription.SubscriptionManagementGrpc._
+import com.expedia.open.tracing.api.subscription._
+import com.expedia.www.anomaly.store.backend.api.{Anomaly, AnomalyWithId}
 import com.expedia.www.haystack.alert.api.{App, IntegrationSuite}
 import io.grpc.ManagedChannelBuilder
 import io.grpc.health.v1.HealthGrpc
 import org.scalatest._
+
 import scala.collection.JavaConverters._
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Promise}
 
 @IntegrationSuite
 trait BasicIntegrationTestSpec extends WordSpec with GivenWhenThen with Matchers with BeforeAndAfterAll with BeforeAndAfter {
 
   protected var client: SubscriptionManagementBlockingStub = _
+  protected var anomalyClient: AnomalyReaderBlockingStub = _
   protected var healthCheckClient: HealthGrpc.HealthBlockingStub = _
   private val executors = Executors.newSingleThreadExecutor()
 
   override def beforeAll(): Unit = {
 
     executors.submit(new Runnable {
-      override def run(): Unit = App.main(Array[String]())
+      override def run(): Unit = {
+        App.main(Array[String]())
+      }
     })
 
-    Thread.sleep(5000)
+    Thread.sleep(10000)
+
+    val promise = Promise[Unit]()
+    App.stores.head.write(getAnomalies, (ex: Exception) => {
+      if (ex != null) {
+        print("Failed in setting up the test")
+        promise.failure(ex)
+      }else {
+        promise.success()
+      }
+    })
 
     client = SubscriptionManagementGrpc.newBlockingStub(ManagedChannelBuilder.forAddress("localhost", 8088)
+      .usePlaintext(true).build())
+
+    anomalyClient = AnomalyReaderGrpc.newBlockingStub(ManagedChannelBuilder.forAddress("localhost", 8088)
       .usePlaintext(true).build())
 
     healthCheckClient = HealthGrpc.newBlockingStub(ManagedChannelBuilder.forAddress("localhost", 8088)
       .usePlaintext(true)
       .build())
 
+    Await.result(promise.future, 5 seconds)
   }
+
 
   protected def getCreateSubscriptionRequest(): CreateSubscriptionRequest = {
     val subscriptionRequest: SubscriptionRequest = getSubscriptionRequest
@@ -78,7 +103,6 @@ trait BasicIntegrationTestSpec extends WordSpec with GivenWhenThen with Matchers
   }
 
 
-
   private def getSubscriptionRequest = {
     val field1 = Field.newBuilder().setName("product").setValue("haystack").build()
     val field2 = Field.newBuilder().setName("serviceName").setValue("abc").build()
@@ -93,4 +117,19 @@ trait BasicIntegrationTestSpec extends WordSpec with GivenWhenThen with Matchers
       .setExpressionTree(expressionTree).build()
     subscriptionRequest
   }
+
+  protected def getAnomalies: List[AnomalyWithId] = {
+    val currentTimestamp = Instant.now().toEpochMilli
+    val labels1 = Map("product" -> "haystack", "servicename" -> "def").asJava
+    val labels2 = Map("product" -> "haystack", "servicename" -> "abc").asJava
+    List(AnomalyWithId("1", new Anomaly(labels1, currentTimestamp)), AnomalyWithId("2", new Anomaly(labels2, currentTimestamp)))
+  }
+
+  protected def searchAnomaliesRequest(requestLabels : Map[String, String]): SearchAnamoliesRequest = {
+    SearchAnamoliesRequest.newBuilder().putAllLabels(requestLabels.asJava)
+      .setStartTime(1).setEndTime(Instant.now().toEpochMilli).setSize(-1).build()
+  }
+
+
+
 }

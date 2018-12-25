@@ -23,9 +23,9 @@ import io.grpc.health.v1.{HealthCheckRequest, HealthCheckResponse}
 import scala.collection.JavaConverters._
 
 @IntegrationSuite
-class SubscriptionServiceIntegrationSpec extends BasicIntegrationTestSpec {
+class AlertServiceIntegrationSpec extends BasicIntegrationTestSpec {
 
-  "Subscription Service Spec" should {
+  "Alert Service Spec" should {
 
     "should return SERVING as health check response" in {
       val request = HealthCheckRequest.newBuilder().build()
@@ -70,6 +70,19 @@ class SubscriptionServiceIntegrationSpec extends BasicIntegrationTestSpec {
       validSubscriptionResponse.getDispatchersList.asScala.length shouldBe 1
       validSubscriptionResponse.getDispatchersList.asScala.head.getEndpoint.toLowerCase shouldBe "haystack"
       validSubscriptionResponse.getExpressionTree.getOperandsCount shouldBe 1
+    }
+
+    "read anomalies in case of matching labels" in {
+      val labels = Map("product" -> "haystack")
+      val searchAnomaliesResponse = anomalyClient.getAnomalies(searchAnomaliesRequest(labels))
+      searchAnomaliesResponse.getSearchAnomalyResponseCount shouldBe 2
+      val searchAnomalyResponse = searchAnomaliesResponse.getSearchAnomalyResponse(0)
+      searchAnomalyResponse.getLabelsMap.entrySet().containsAll(labels.asJava.entrySet()) shouldBe true
+    }
+
+    "return empty anomalies in case of no matching labels" in {
+      val searchAnomaliesResponse = anomalyClient.getAnomalies(searchAnomaliesRequest(Map("product" -> "abc")))
+      searchAnomaliesResponse.getSearchAnomalyResponseCount shouldBe 0
     }
 
 

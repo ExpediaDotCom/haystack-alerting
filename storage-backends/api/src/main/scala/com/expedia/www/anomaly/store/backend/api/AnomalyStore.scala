@@ -28,7 +28,7 @@ object AnomalyStore {
 }
 
 trait AnomalyStore {
-  def read(labels: Map[String, Object], from: Long, to: Long, size: Int, callback: AnomalyStore.ReadCallback): Unit
+  def read(labels: Map[String, String], from: Long, to: Long, size: Int, callback: AnomalyStore.ReadCallback): Unit
   def write(anomalies: Seq[AnomalyWithId], callback: AnomalyStore.WriteCallback): Unit
   def init(config: Config): Unit
   def close(): Unit

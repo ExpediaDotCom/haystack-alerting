@@ -11,7 +11,8 @@
         <query objectName="metrics:name=SubscriptionManagement.getSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.getSubscription.failures.#attribute#"/>
         <query objectName="metrics:name=SubscriptionManagement.searchSubscription" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="subscription-service.searchSubscription.#attribute#"/>
         <query objectName="metrics:name=SubscriptionManagement.searchSubscription.failures" attributes="OneMinuteRate" resultAlias="subscription-service.searchSubscription.failures.#attribute#"/>
-
+        <query objectName="metrics:name=AnomalyReader.getAnomalies" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="anomaly-service.getAnomalies.#attribute#"/>
+        <query objectName="metrics:name=AnomalyReader.getAnomalies.failures" attributes="OneMinuteRate" resultAlias="anomaly-service.getAnomalies.failures.#attribute#"/>
     </queries>
     <outputWriter class="org.jmxtrans.agent.GraphitePlainTextTcpOutputWriter">
         <host>${HAYSTACK_GRAPHITE_HOST:monitoring-influxdb-graphite.kube-system.svc}</host>

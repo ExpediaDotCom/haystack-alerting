@@ -37,7 +37,7 @@ class Reader private[backend](client: RestHighLevelClient,
   private val timeout = readTimeout(config)
   private val maxSize = maxReadSize(config)
 
-  def read(labels: Map[String, Object], from: Long, to: Long, size: Int, callback: AnomalyStore.ReadCallback): Unit = {
+  def read(labels: Map[String, String], from: Long, to: Long, size: Int, callback: AnomalyStore.ReadCallback): Unit = {
     val sourceBuilder = new SearchSourceBuilder
     val boolQuery = QueryBuilders.boolQuery
 
@@ -46,7 +46,7 @@ class Reader private[backend](client: RestHighLevelClient,
     }
 
     boolQuery.must(new RangeQueryBuilder(START_TIME).gt(from).lt(to))
-    sourceBuilder.query(boolQuery).timeout(timeout).size(if (size == 0) maxSize else size)
+    sourceBuilder.query(boolQuery).timeout(timeout).size(if (size == -1) maxSize else size)
 
     val searchRequest = new SearchRequest().source(sourceBuilder).indices(this.indexNamePrefix + "*")
 

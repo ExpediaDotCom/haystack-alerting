@@ -5,13 +5,17 @@ MAVEN := ../mvnw
 export DOCKER_ORG := expediadotcom
 export DOCKER_IMAGE_NAME := haystack-alert-api
 
-docker_build:
+docker_build: copy_backend_jars
 	docker build -t $(DOCKER_IMAGE_NAME) -f build/docker/Dockerfile .
+
+copy_backend_jars:
+	mkdir -p storage-backends
+	cp ../storage-backends/elasticsearch/target/elasticsearch-store.jar storage-backends/elasticsearch-store.jar
 
 integration_test: docker_build
 	# prepare environment to run integration tests against
 	docker-compose -f build/docker/docker-compose.yml up -d
-	sleep 10
+	sleep 30
 	${MAVEN} verify
 	docker-compose -f build/docker/docker-compose.yml stop
 

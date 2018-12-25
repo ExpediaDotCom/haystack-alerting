@@ -6,3 +6,9 @@ services:
     - "8500:8080"
     volumes:
     - ./stubs:/home/wiremock/
+   elasticsearch:
+      image: elasticsearch:5.5.2-alpine
+      environment:
+        ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+      ports:
+      - "9200:9200"

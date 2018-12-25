@@ -15,7 +15,7 @@
  *
  */
 
-package com.expedia.www.haystack.alert.api.unit.manager
+package com.expedia.www.haystack.alert.api.unit.manager.subscription
 
 import com.expedia.alertmanager.model
 import com.expedia.www.haystack.alert.api.config.AppConfiguration

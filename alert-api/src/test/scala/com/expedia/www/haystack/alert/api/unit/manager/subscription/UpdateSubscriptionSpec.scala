@@ -15,10 +15,11 @@
  *
  */
 
-package com.expedia.www.haystack.alert.api.unit.manager
+package com.expedia.www.haystack.alert.api.unit.manager.subscription
 
 import com.expedia.open.tracing.api.subscription._
 import com.expedia.www.haystack.alert.api.client.AsyncHttpClient
+import com.expedia.www.haystack.alert.api.config.AppConfiguration
 import com.expedia.www.haystack.alert.api.manager.SubscriptionManager
 import org.apache.http.HttpResponse
 import org.mockito.ArgumentMatchers.any
@@ -28,124 +29,120 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Promise}
 
-class CreateSubscriptionSpec extends SubscriptionManagerSpec {
+class UpdateSubscriptionSpec extends SubscriptionManagerSpec {
 
-  private val VALID_SUBSCRIPTION_RESULT = "[1]"
+  private val VALID_SUBSCRIPTION_RESULT = ""
 
 
   "Subscription Manager " should {
 
-    "should return subscription ids in case of valid create subscription request" in {
+    "should update subscription in case of valid update subscription request" in {
 
-      Given("Subscription Manager and valid create subscription request")
+      Given("Subscription Manager and valid update subscription request")
       val asyncHttpClient = mock(classOf[AsyncHttpClient])
       val promise = Promise[HttpResponse]()
-      when(asyncHttpClient.executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
+      when(asyncHttpClient.executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
         promise.future
       )
       promise.success(getHttpResponse(VALID_SUBSCRIPTION_RESULT, OK_STATUS_CODE))
       val subscriptionManager = new SubscriptionManager(appConfiguration, asyncHttpClient)
-      val createSubscriptionRequest = getValidCreateSubscriptionRequest
 
 
-      When("create subscription request is called")
-      val future = subscriptionManager.createSubscriptionRequest(createSubscriptionRequest)
+      When("update subscription request is called")
+      val future = subscriptionManager.updateSubscriptionRequest(getValidUpdateSubscriptionRequest)
 
-      Then("subscription ids are returned")
-      val createSubscriptionResponse = Await.result(future, 5 seconds)
-      verify(asyncHttpClient, times(1)).executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
-      createSubscriptionResponse.getSubscriptionId shouldBe "1"
+      Then("subscription is updated")
+      val updateSubscriptionResponse = Await.result(future, 5 seconds)
+      verify(asyncHttpClient, times(1)).executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
+      updateSubscriptionResponse should not be (null)
 
 
     }
 
 
-    "should throw an exception in case of invalid create subscription request" in {
+    "should throw an exception in case of invalid update subscription request" in {
 
-      Given("Subscription Manager and invalid create subscription request")
+      Given("Subscription Manager and invalid update subscription request")
+      val appConfiguration = new AppConfiguration()
       val asyncHttpClient = mock(classOf[AsyncHttpClient])
       val promise = Promise[HttpResponse]()
-      when(asyncHttpClient.executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
+      when(asyncHttpClient.executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
         promise.future
       )
       promise.success(getHttpResponse(ERROR_SUBSCRIPTION_RESULT, ERROR_STATUS_CODE))
       val subscriptionManager = new SubscriptionManager(appConfiguration, asyncHttpClient)
-      val createSubscriptionRequest = getInvalidCreateSubscriptionRequest
 
-
-      When("create subscription request is called")
-      val future = subscriptionManager.createSubscriptionRequest(createSubscriptionRequest)
+      When("update subscription request is called")
+      val future = subscriptionManager.updateSubscriptionRequest(getInvalidUpdateSubscriptionRequest)
 
       Then("exception is thrown")
       val exception = intercept[Exception] {
         Await.result(future, 5 seconds)
       }
       exception should have message s"Failed with status code ${ERROR_STATUS_CODE} with error ${ERROR_SUBSCRIPTION_RESULT}"
-      verify(asyncHttpClient, times(1)).executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
+      verify(asyncHttpClient, times(1)).executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
 
 
     }
 
 
-    "should retry in case of exception and create subscription in case of valid create subscription request" in {
+    "should retry in case of exception and update subscription in case of valid update subscription request" in {
 
-      Given("Subscription Manager and valid create subscription request")
+      Given("Subscription Manager and valid update subscription request")
+      val appConfiguration = new AppConfiguration()
       val asyncHttpClient = mock(classOf[AsyncHttpClient])
       val failurePromise = Promise[HttpResponse]()
       val successPromise = Promise[HttpResponse]()
-      when(asyncHttpClient.executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
+      when(asyncHttpClient.executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
         failurePromise.future).thenReturn(successPromise.future)
       successPromise.success(getHttpResponse(VALID_SUBSCRIPTION_RESULT, OK_STATUS_CODE))
       failurePromise.failure(new RuntimeException(EXCEPTION))
       val subscriptionManager = new SubscriptionManager(appConfiguration, asyncHttpClient)
-      val createSubscriptionRequest = getValidCreateSubscriptionRequest
 
 
-      When("create subscription request is called")
-      val future = subscriptionManager.createSubscriptionRequest(createSubscriptionRequest)
+      When("update subscription request is called")
+      val future = subscriptionManager.updateSubscriptionRequest(getValidUpdateSubscriptionRequest)
 
-      Then("subscription ids are returned after retrying")
+      Then("subscription is updated after retrying")
       val exception = intercept[Exception] {
         Await.result(future, appConfiguration.subscriptionConfig.retryInSeconds - 1 seconds)
       }
-      val createSubscriptionResponse = Await.result(future, 5 seconds)
+      val updateSubscriptionResponse = Await.result(future, 5 seconds)
       exception should have message s"Futures timed out after [${appConfiguration.subscriptionConfig.retryInSeconds - 1} seconds]"
-      createSubscriptionResponse.getSubscriptionId shouldBe "1"
-      verify(asyncHttpClient, times(appConfiguration.subscriptionConfig.numOfRetries)).executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
+      updateSubscriptionResponse should not be (null)
+      verify(asyncHttpClient, times(appConfiguration.subscriptionConfig.numOfRetries)).executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
 
     }
 
 
     "should retry in case of exception and throw an exception if all retries are exhausted" in {
 
-      Given("Subscription Manager and invalid create subscription request")
+      Given("Subscription Manager and invalid update subscription request")
+      val appConfiguration = new AppConfiguration()
       val asyncHttpClient = mock(classOf[AsyncHttpClient])
       val failurePromise = Promise[HttpResponse]()
-      when(asyncHttpClient.executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
+      when(asyncHttpClient.executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))).thenReturn(
         failurePromise.future)
       failurePromise.failure(new RuntimeException(EXCEPTION))
       val subscriptionManager = new SubscriptionManager(appConfiguration, asyncHttpClient)
 
-
-      When("create subscription request is called")
-      val future = subscriptionManager.createSubscriptionRequest(getInvalidCreateSubscriptionRequest)
+      When("update subscription request is called")
+      val future = subscriptionManager.updateSubscriptionRequest(getInvalidUpdateSubscriptionRequest)
 
       Then("exception is thrown after exhausting all retries")
       val exception = intercept[Exception] {
         Await.result(future, (appConfiguration.subscriptionConfig.numOfRetries * appConfiguration.subscriptionConfig.retryInSeconds + 1) seconds)
       }
       exception should have message EXCEPTION
-      verify(asyncHttpClient, times(appConfiguration.subscriptionConfig.numOfRetries + 1)).executePost(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
+      verify(asyncHttpClient, times(appConfiguration.subscriptionConfig.numOfRetries + 1)).executePut(any(classOf[String]), any(classOf[String]), any(classOf[Array[Byte]]))
 
     }
 
   }
 
-  private def getValidCreateSubscriptionRequest: CreateSubscriptionRequest = {
-    val field1 = Field.newBuilder().setName("product").setValue("haystack").build()
-    val field2 = Field.newBuilder().setName("serviceName").setValue("abc").build()
-    val operand1 = Operand.newBuilder().setField(field1).build()
-    val operand2 = Operand.newBuilder().setField(field2).build()
+  private def getValidUpdateSubscriptionRequest: UpdateSubscriptionRequest = {
+    val operand1 = Operand.newBuilder().setExpression(getExpressionTree).build()
+    val operand2 = Operand.newBuilder().setExpression(getExpressionTree).build()
 
     val expressionTree = ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
       .addAllOperands(List(operand1, operand2).asJava).build()
@@ -153,24 +150,25 @@ class CreateSubscriptionSpec extends SubscriptionManagerSpec {
 
     val subscriptionRequest = SubscriptionRequest.newBuilder().addAllDispatchers(List(dispatcher).asJava)
       .setExpressionTree(expressionTree).build()
-    CreateSubscriptionRequest.newBuilder().setUser(User.newBuilder().setUsername("haystack"))
+    UpdateSubscriptionRequest.newBuilder().setSubscriptionId("1")
       .setSubscriptionRequest(subscriptionRequest).build()
   }
 
 
-  private def getInvalidCreateSubscriptionRequest: CreateSubscriptionRequest = {
+  private def getInvalidUpdateSubscriptionRequest: UpdateSubscriptionRequest = {
+    val subscriptionRequest = SubscriptionRequest.newBuilder().setExpressionTree(getExpressionTree).build()
+    UpdateSubscriptionRequest.newBuilder().setSubscriptionId("2")
+      .setSubscriptionRequest(subscriptionRequest).build()
+  }
+
+
+  private def getExpressionTree : ExpressionTree = {
     val field1 = Field.newBuilder().setName("product").setValue("haystack").build()
     val field2 = Field.newBuilder().setName("serviceName").setValue("abc").build()
     val operand1 = Operand.newBuilder().setField(field1).build()
     val operand2 = Operand.newBuilder().setField(field2).build()
 
-    val expressionTree = ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
+    ExpressionTree.newBuilder().setOperator(ExpressionTree.Operator.AND)
       .addAllOperands(List(operand1, operand2).asJava).build()
-
-    val subscriptionRequest = SubscriptionRequest.newBuilder().setExpressionTree(expressionTree).build()
-    CreateSubscriptionRequest.newBuilder().setUser(User.newBuilder().setUsername("haystack"))
-      .setSubscriptionRequest(subscriptionRequest).build()
   }
-
-
 }
