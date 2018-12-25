@@ -15,7 +15,7 @@
  *
  */
 
-package com.expedia.www.haystack.alert.api.unit.manager
+package com.expedia.www.haystack.alert.api.unit.manager.subscription
 
 import com.expedia.open.tracing.api.subscription._
 import com.expedia.www.haystack.alert.api.client.AsyncHttpClient

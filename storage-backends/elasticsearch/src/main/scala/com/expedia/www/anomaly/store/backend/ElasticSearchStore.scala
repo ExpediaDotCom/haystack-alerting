@@ -47,7 +47,7 @@ class ElasticSearchStore extends AnomalyStore {
   private var reader: Reader = _
   private var writer: Writer = _
 
-  override def read(labels: Map[String, Object],
+  override def read(labels: Map[String, String],
                     from: Long,
                     to: Long,
                     size: Int,

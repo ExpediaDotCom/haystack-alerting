@@ -27,7 +27,7 @@
 
     <artifactId>haystack-alert-api</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>${artifactId}</name>
 
     <parent>
@@ -55,6 +55,12 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.expedia.www</groupId>
+            <artifactId>haystack-anomaly-storage-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -121,6 +127,18 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-scala_${scala.major.minor.version}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <scope>test</scope>
         </dependency>
 
 

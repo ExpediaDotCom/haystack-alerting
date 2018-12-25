@@ -76,8 +76,8 @@
     </developers>
 
     <modules>
-        <module>alert-api</module>
         <module>storage-backends</module>
+        <module>alert-api</module>
         <module>anomaly-store</module>
     </modules>
 

@@ -9,7 +9,7 @@ clean:
 build: clean
 	${MAVEN} install package
 
-all: clean build_alert_api build_storage_backends build_anomaly_store alert-api anomaly_store
+all: clean build_storage_backends build_alert_api build_anomaly_store alert-api anomaly_store
 
 report-coverage:
 	${MAVEN} scoverage:report-only
@@ -30,7 +30,7 @@ anomaly_store:
 	$(MAKE) -C anomaly-store all
 
 # build all and release
-release: clean build_alert_api build_storage_backends build_anomaly_store
+release: clean build_storage_backends build_alert_api build_anomaly_store
 	cd alert-api && $(MAKE) release
 	cd anomaly-store && $(MAKE) release
 	./.travis/deploy.sh

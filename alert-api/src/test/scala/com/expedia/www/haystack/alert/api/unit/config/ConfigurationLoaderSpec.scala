@@ -45,6 +45,12 @@ class ConfigurationLoaderSpec extends BasicUnitTestSpec {
       subscriptionConfiguration.retryInSeconds shouldBe 1
     }
 
+    "load plugins config from base.conf" in {
+      val pluginConfigs = new AppConfiguration().pluginConfigs
+      pluginConfigs.length shouldBe 1
+      pluginConfigs.head.name.toLowerCase shouldBe "elasticsearch"
+    }
+
   }
 
 

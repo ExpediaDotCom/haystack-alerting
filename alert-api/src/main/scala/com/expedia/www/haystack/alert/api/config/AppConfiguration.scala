@@ -17,9 +17,12 @@
 
 package com.expedia.www.haystack.alert.api.config
 
-import com.expedia.www.haystack.alert.api.config.entities.{ClientConfiguration, ServiceConfiguration, SslConfiguration, SubscriptionConfiguration}
+
+import com.expedia.www.haystack.alert.api.config.entities._
 import com.expedia.www.haystack.commons.config.ConfigurationLoader
 import com.typesafe.config.Config
+
+import scala.collection.JavaConverters._
 
 class AppConfiguration {
 
@@ -42,6 +45,16 @@ class AppConfiguration {
   val subscriptionConfig = {
     val subscriptionConfig = config.getConfig("subscription")
     SubscriptionConfiguration(subscriptionConfig.getString("baseUrl"), subscriptionConfig.getInt("retryInSeconds"), subscriptionConfig.getInt("numOfRetries"))
+  }
+
+  val pluginConfigs = {
+    val pluginConfigs = config.getConfigList("plugins").asScala
+    pluginConfigs.map(plugin => PluginConfig(
+      plugin.getString("directory"),
+      plugin.getString("name"),
+      plugin.getString("jar.name"),
+      plugin.getConfig("conf"))
+    ).toList
   }
 
 }
