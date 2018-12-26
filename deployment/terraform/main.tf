@@ -42,6 +42,7 @@ module "anomaly-store" {
 }
 
 module "es-indices-curator" {
+  source = "es-indices-curator"
   kubectl_executable_name = "${var.kubectl_executable_name}"
   kubectl_context_name = "${var.kubectl_context_name}"
   enabled = "${var.haystack-alerts["es_curator_enabled"]}"
