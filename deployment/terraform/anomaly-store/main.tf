@@ -1,6 +1,6 @@
 locals {
-  app_name = "alert-api"
-  config_file_path = "${path.module}/templates/alert-api.conf"
+  app_name = "anomaly-store"
+  config_file_path = "${path.module}/templates/anomaly-store.conf"
   deployment_yaml_file_path = "${path.module}/templates/deployment.yaml"
   count = "${var.enabled?1:0}"
   checksum = "${sha1("${data.template_file.config_data.rendered}")}"
@@ -13,7 +13,7 @@ resource "kubernetes_config_map" "haystack-config" {
     namespace = "${var.namespace}"
   }
   data {
-    "alert-api.conf" = "${data.template_file.config_data.rendered}"
+    "anomaly-store.conf" = "${data.template_file.config_data.rendered}"
   }
   count = "${local.count}"
 
@@ -21,6 +21,10 @@ resource "kubernetes_config_map" "haystack-config" {
 
 data "template_file" "config_data" {
   template = "${file("${local.config_file_path}")}"
+  vars {
+    kafka_endpoint = "${var.kafka_endpoint}"
+    elasticsearch_endpoint = "${var.elasticsearch_endpoint}"
+  }
 }
 
 data "template_file" "deployment_yaml" {
@@ -33,15 +37,12 @@ data "template_file" "deployment_yaml" {
     graphite_enabled = "${var.graphite_enabled}"
     node_selecter_label = "${var.node_selector_label}"
     image = "${var.image}"
-    subscription_endpoint = "${var.subscription_service_endpoint}"
     replicas = "${var.replicas}"
     memory_limit = "${var.memory_limit}"
     memory_request = "${var.memory_request}"
     jvm_memory_limit = "${var.jvm_memory_limit}"
     cpu_limit = "${var.cpu_limit}"
     cpu_request = "${var.cpu_request}"
-    service_port = "${var.service_port}"
-    container_port = "${var.container_port}"
     configmap_name = "${local.configmap_name}"
     env_vars= "${indent(9,"${var.env_vars}")}"
 

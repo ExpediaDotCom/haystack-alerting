@@ -40,3 +40,12 @@ module "anomaly-store" {
   kubectl_executable_name = "${var.kubectl_executable_name}"
   kubectl_context_name = "${var.kubectl_context_name}"
 }
+
+module "es-indices-curator" {
+  kubectl_executable_name = "${var.kubectl_executable_name}"
+  kubectl_context_name = "${var.kubectl_context_name}"
+  enabled = "${var.haystack-alerts["es_curator_enabled"]}"
+  elasticsearch_hostname = "${var.elasticsearch_hostname}"
+  elasticsearch_port = "${var.elasticsearch_port}"
+  namespace = "${var.namespace}"
+}

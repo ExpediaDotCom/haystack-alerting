@@ -16,15 +16,3 @@ variable "jvm_memory_limit"{}
 variable "env_vars" {}
 variable "elasticsearch_endpoint" {}
 variable "kafka_endpoint" {}
-
-
-variable "termination_grace_period" {
-  default = 30
-}
-
-variable "service_port" {
-  default = 8080
-}
-variable "container_port" {
-  default = 8080
-}
