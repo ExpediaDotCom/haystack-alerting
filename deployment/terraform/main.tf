@@ -1,6 +1,6 @@
 module "alert-api" {
   source = "alert-api"
-  image = "expediadotcom/haystack-alert-api:${var.haystack-alerts["alert-api_version"]}"
+  image = "expediadotcom/haystack-alert-api:${var.haystack-alerts["version"]}"
   replicas = "${var.haystack-alerts["alert-api_instances"]}"
   enabled = "${var.haystack-alerts["enabled"]}"
   cpu_limit = "${var.haystack-alerts["alert-api_cpu_limit"]}"
@@ -21,7 +21,7 @@ module "alert-api" {
 
 module "anomaly-store" {
   source = "anomaly-store"
-  image = "expediadotcom/haystack-anomaly-store:${var.haystack-alerts["anomaly-store_version"]}"
+  image = "expediadotcom/haystack-anomaly-store:${var.haystack-alerts["version"]}"
   replicas = "${var.haystack-alerts["anomaly-store_instances"]}"
   enabled = "${var.haystack-alerts["enabled"]}"
   cpu_limit = "${var.haystack-alerts["anomaly-store_cpu_limit"]}"
