@@ -21,6 +21,9 @@ resource "kubernetes_config_map" "haystack-config" {
 
 data "template_file" "config_data" {
   template = "${file("${local.config_file_path}")}"
+  vars {
+    subscription_endpoint = "${var.subscription_service_endpoint}"
+  }
 }
 
 data "template_file" "deployment_yaml" {
@@ -33,7 +36,6 @@ data "template_file" "deployment_yaml" {
     graphite_enabled = "${var.graphite_enabled}"
     node_selecter_label = "${var.node_selector_label}"
     image = "${var.image}"
-    subscription_endpoint = "${var.subscription_service_endpoint}"
     replicas = "${var.replicas}"
     memory_limit = "${var.memory_limit}"
     memory_request = "${var.memory_request}"
