@@ -17,6 +17,7 @@ module "alert-api" {
   node_selector_label = "${var.node_selector_label}"
   kubectl_executable_name = "${var.kubectl_executable_name}"
   kubectl_context_name = "${var.kubectl_context_name}"
+  elasticsearch_endpoint = "${var.elasticsearch_hostname}:${var.elasticsearch_port}"
 }
 
 module "anomaly-store" {
