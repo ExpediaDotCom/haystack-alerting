@@ -129,6 +129,18 @@
             <artifactId>jackson-module-scala_${scala.major.minor.version}</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
