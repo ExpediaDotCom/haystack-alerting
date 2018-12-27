@@ -23,6 +23,7 @@ data "template_file" "config_data" {
   template = "${file("${local.config_file_path}")}"
   vars {
     subscription_endpoint = "${var.subscription_service_endpoint}"
+    elasticsearch_endpoint = "${var.elasticsearch_endpoint}"
   }
 }
 
