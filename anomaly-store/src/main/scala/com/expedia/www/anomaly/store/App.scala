@@ -36,13 +36,20 @@ object App extends scala.App {
   val store = loadAndInitializePlugin(appConfig.pluginConfig)
   val controller = new AnomalyStoreController(appConfig.kafkaConfig, store, new HealthController(appConfig.healthStatusFilePath))
 
-  controller.start()
-
-  Runtime.getRuntime.addShutdownHook(new Thread(() => {
-    LOGGER.info("Shutdown hook is invoked, tearing down the application.")
-    closeQuietly(controller)
-    store.close()
-  }))
+  try {
+    controller.start()
+    Runtime.getRuntime.addShutdownHook(new Thread(() => {
+      LOGGER.info("Shutdown hook is invoked, tearing down the application.")
+      closeQuietly(controller)
+      store.close()
+    }))
+  } catch {
+    case ex: Exception =>
+      LOGGER.error("Observed fatal exception while running the app", ex)
+      closeQuietly(controller)
+      store.close()
+      System.exit(1)
+  }
 
   @throws[Exception]
   private def loadAndInitializePlugin(cfg: PluginConfig): AnomalyStore = {
