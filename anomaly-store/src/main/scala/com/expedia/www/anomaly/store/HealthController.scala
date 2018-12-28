@@ -19,17 +19,26 @@ package com.expedia.www.anomaly.store
 import java.io.IOException
 import java.nio.file.{Files, Paths}
 
-class HealthController(statusFile: String) {
-  private[store] def setUnhealthy() = write("unhealthy")
+import org.slf4j.LoggerFactory
 
-  private[store] def setHealthy() = write("healthy")
+class HealthController(statusFile: String) {
+
+  private val LOGGER = LoggerFactory.getLogger(classOf[HealthController])
+
+  private[store] def setUnhealthy() = {
+    write("false")
+  }
+
+  private[store] def setHealthy() = {
+    write("true")
+  }
 
   private def write(status: String) = {
     try
       Files.write(Paths.get(statusFile), status.getBytes)
     catch {
       case ex: IOException =>
-        ex.printStackTrace()
+        LOGGER.error("Exception while writing health status file", ex)
     }
   }
 }
