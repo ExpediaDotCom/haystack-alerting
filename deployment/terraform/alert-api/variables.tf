@@ -16,6 +16,7 @@ variable "jvm_memory_limit"{}
 variable "env_vars" {}
 variable "subscription_service_endpoint" {}
 variable "elasticsearch_endpoint" {}
+variable "elasticsearch_template" {}
 
 variable "termination_grace_period" {
   default = 30

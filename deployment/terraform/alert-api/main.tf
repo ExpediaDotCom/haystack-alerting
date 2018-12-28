@@ -24,6 +24,7 @@ data "template_file" "config_data" {
   vars {
     subscription_endpoint = "${var.subscription_service_endpoint}"
     elasticsearch_endpoint = "${var.elasticsearch_endpoint}"
+    elasticsearch_template = "${var.elasticsearch_template}"
   }
 }
 
