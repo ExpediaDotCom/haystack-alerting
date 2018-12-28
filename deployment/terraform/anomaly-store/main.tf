@@ -24,6 +24,7 @@ data "template_file" "config_data" {
   vars {
     kafka_endpoint = "${var.kafka_endpoint}"
     elasticsearch_endpoint = "${var.elasticsearch_endpoint}"
+    elasticsearch_template = "${var.elasticsearch_template}"
   }
 }
 

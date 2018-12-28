@@ -79,7 +79,7 @@ class ElasticSearchStore extends AnomalyStore {
       val entity = new NStringEntity(template.toString, ContentType.APPLICATION_JSON)
       val resp: Response = client.getLowLevelClient.performRequest(
         "PUT",
-        "/_template/alert-store-template",
+        "/_template/haystack-anomaly-template",
         Collections.emptyMap[String, String](),
         entity)
 

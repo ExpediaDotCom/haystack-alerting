@@ -13,7 +13,7 @@
     }
   },
   "mappings": {
-    "alerts": {
+    "anomaly": {
       "_source": {
         "enabled": true
       },

@@ -16,3 +16,4 @@ variable "jvm_memory_limit"{}
 variable "env_vars" {}
 variable "elasticsearch_endpoint" {}
 variable "kafka_endpoint" {}
+variable "elasticsearch_template" {}
