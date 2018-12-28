@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory
 object App extends scala.App {
   private val LOGGER = LoggerFactory.getLogger(classOf[App])
 
-  val appConfig = if (args.apply(0) != null && args.apply(0).nonEmpty) {
+  val appConfig = if (args.length > 0 && args.apply(0).nonEmpty) {
     new AppConfiguration(args.apply(0))
   } else {
     new AppConfiguration()
