@@ -4,7 +4,7 @@ locals {
   deployment_yaml_file_path = "${path.module}/templates/deployment.yaml"
   count = "${var.enabled?1:0}"
   checksum = "${sha1("${data.template_file.config_data.rendered}")}"
-  configmap_name = "alert-api-${local.checksum}"
+  configmap_name = "anomaly-store-${local.checksum}"
 }
 
 resource "kubernetes_config_map" "haystack-config" {
