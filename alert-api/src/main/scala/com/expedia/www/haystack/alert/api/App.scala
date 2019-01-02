@@ -43,6 +43,7 @@ object App extends MetricsSupport {
   def main(args: Array[String]): Unit = {
     //create an instance of the application
     val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
+    jmxReporter.start()
     startApp()
   }
 
