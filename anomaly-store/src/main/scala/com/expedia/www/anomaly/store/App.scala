@@ -20,11 +20,13 @@ import java.io.{Closeable, File}
 import java.net.{URL, URLClassLoader}
 import java.util.ServiceLoader
 
+import com.codahale.metrics.JmxReporter
 import com.expedia.www.anomaly.store.backend.api.AnomalyStore
 import com.expedia.www.anomaly.store.config.{AppConfiguration, PluginConfig}
+import com.expedia.www.haystack.commons.metrics.MetricsSupport
 import org.slf4j.LoggerFactory
 
-object App extends scala.App {
+object App extends scala.App with MetricsSupport {
   private val LOGGER = LoggerFactory.getLogger(classOf[App])
 
   val appConfig = if (args.length > 0 && args.apply(0).nonEmpty) {
@@ -35,8 +37,10 @@ object App extends scala.App {
 
   val store = loadAndInitializePlugin(appConfig.pluginConfig)
   val controller = new AnomalyStoreController(appConfig.kafkaConfig, store, new HealthController(appConfig.healthStatusFilePath))
+  val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
 
   try {
+    jmxReporter.start()
     controller.start()
     Runtime.getRuntime.addShutdownHook(new Thread(() => {
       LOGGER.info("Shutdown hook is invoked, tearing down the application.")
