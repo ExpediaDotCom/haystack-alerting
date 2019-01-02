@@ -35,25 +35,19 @@ object App extends scala.App with MetricsSupport {
     new AppConfiguration()
   }
 
+  val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
   val store = loadAndInitializePlugin(appConfig.pluginConfig)
   val controller = new AnomalyStoreController(appConfig.kafkaConfig, store, new HealthController(appConfig.healthStatusFilePath))
-  val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
 
-  try {
-    jmxReporter.start()
-    controller.start()
-    Runtime.getRuntime.addShutdownHook(new Thread(() => {
-      LOGGER.info("Shutdown hook is invoked, tearing down the application.")
-      closeQuietly(controller)
-      store.close()
-    }))
-  } catch {
-    case ex: Exception =>
-      LOGGER.error("Observed fatal exception while running the app", ex)
-      closeQuietly(controller)
-      store.close()
-      System.exit(1)
-  }
+  jmxReporter.start()
+  controller.start()
+  Runtime.getRuntime.addShutdownHook(new Thread(() => {
+    LOGGER.info("Shutdown hook is invoked, tearing down the application.")
+    closeQuietly(controller)
+    store.close()
+    jmxReporter.close()
+  }))
+
 
   @throws[Exception]
   private def loadAndInitializePlugin(cfg: PluginConfig): AnomalyStore = {
