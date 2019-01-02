@@ -61,7 +61,7 @@ class AppIntegrationSpec extends FunSpec with Matchers {
       })
 
       // sleep for enough to let app start
-      Thread.sleep(40000)
+      Thread.sleep(10000)
       produceAnomaliesInKakfa()
 
       // sleep for kafka to flush
