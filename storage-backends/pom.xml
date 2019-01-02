@@ -18,4 +18,12 @@
         <module>elasticsearch</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.expedia.www</groupId>
+            <artifactId>haystack-commons</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>
