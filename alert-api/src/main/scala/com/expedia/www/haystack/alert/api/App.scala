@@ -40,10 +40,11 @@ object App extends MetricsSupport {
   val config = new AppConfiguration
   var stores: List[AnomalyStore] = _
 
+  val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
+
   def main(args: Array[String]): Unit = {
-    //create an instance of the application
-    val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
     jmxReporter.start()
+    //create an instance of the application
     startApp()
   }
 
@@ -53,9 +54,9 @@ object App extends MetricsSupport {
       startService()
     } catch {
       case ex: Throwable =>
-        ex.printStackTrace()
         LOGGER.error("Fatal error observed while running the app", ex)
         LoggerUtils.shutdownLogger()
+        jmxReporter.close()
         System.exit(1)
     }
   }
@@ -85,6 +86,7 @@ object App extends MetricsSupport {
         LOGGER.info("shutting down since JVM is shutting down")
         server.shutdown()
         stores.foreach(store => store.close())
+        jmxReporter.close()
         LOGGER.info("server has been shutdown now")
       }
     })
