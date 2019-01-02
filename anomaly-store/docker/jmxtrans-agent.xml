@@ -33,6 +33,12 @@
         <query objectName="kafka.consumer:type=consumer-fetch-manager-metrics,client-id=*" attribute="records-lag-max" resultAlias="kafka-consumer-%client-id%.records-lag.max"/>
         <query objectName="kafka.consumer:type=consumer-fetch-manager-metrics,client-id=*" attribute="records-consumed-rate" resultAlias="kafka-consumer-%client-id%.records-consumed.rate"/>
 
+        <!-- elasticsearch metrics coming from driver-->
+        <query objectName="metrics:name=es.write.failure" attributes="OneMinuteRate" resultAlias="elasticsearch.writer.failure.#attribute#"/>
+        <query objectName="metrics:name=es.writer.time" attributes="50thPercentile,99thPercentile,OneMinuteRate" resultAlias="elasticsearch.writer.time.#attribute#"/>
+
+
+
 
 
     </queries>
