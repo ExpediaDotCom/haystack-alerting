@@ -48,8 +48,8 @@ class Writer private[backend](client: RestHighLevelClient,
         val indexRequest = new IndexRequest(idxName, ES_INDEX_TYPE, al.id)
         indexRequest.source(convertAnomalyToJsonMap(al.anomaly))
         bulkRequest.add(indexRequest)
-        this.client.bulkAsync(bulkRequest, new BulkActionListener(esWriteTime.time(), bulkRequest, callback, 0))
       }
+      this.client.bulkAsync(bulkRequest, new BulkActionListener(esWriteTime.time(), bulkRequest, callback, 0))
     } catch {
       case ex: Exception => callback.onComplete(ex)
     }

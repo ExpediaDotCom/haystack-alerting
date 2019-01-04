@@ -79,7 +79,7 @@ class AppIntegrationSpec extends FunSpec with Matchers {
       sourceBuilder.query(boolQuery)
       val searchRequest = new SearchRequest().source(sourceBuilder).indices("haystack-anomalies*")
       val response = client.search(searchRequest)
-      Assert.assertEquals(response.getHits.getHits.length, 1)
+      Assert.assertEquals(response.getHits.getHits.length, 9)
       val anomaly = response.getHits.getAt(0).getSourceAsMap
       Assert.assertEquals(anomaly.get("tags").asInstanceOf[java.util.Map[String, String]].get(SERVICE_TAG_KEY), svc)
     }
@@ -91,11 +91,13 @@ class AppIntegrationSpec extends FunSpec with Matchers {
     val producer = new KafkaProducer[String, Array[Byte]](props, new StringSerializer, new ByteArraySerializer)
     val a1 = createAnomalyJson("svc1")
     val a2 = createAnomalyJson("svc2")
+    (1 until 10).foreach ( x =>
     List(a1, a2) foreach { a =>
       producer.send(new ProducerRecord[String, Array[Byte]](KAFKA_TOPIC, "k1", a), (metadata: RecordMetadata, exception: Exception) => {
         if (exception != null) Assert.fail("Fail to produce the message to kafka with error message " + exception.getMessage)
       })
-    }
+      Thread.sleep(100)
+    })
     producer.flush()
   }
 

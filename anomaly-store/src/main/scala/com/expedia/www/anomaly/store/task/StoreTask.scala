@@ -207,7 +207,7 @@ class StoreTask(taskId: Int, cfg: KafkaConfig, store: AnomalyStore, parallelWrit
     try {
       val records = consumer.poll(cfg.pollTimeoutMillis)
       wakeups = 0
-      Some(records)
+      if(records.isEmpty) None else Some(records)
     } catch {
       case we: WakeupException =>
         handleWakeupError(we)
