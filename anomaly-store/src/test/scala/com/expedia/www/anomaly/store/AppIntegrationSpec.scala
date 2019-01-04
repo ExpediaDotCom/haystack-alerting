@@ -79,7 +79,7 @@ class AppIntegrationSpec extends FunSpec with Matchers {
       sourceBuilder.query(boolQuery)
       val searchRequest = new SearchRequest().source(sourceBuilder).indices("haystack-anomalies*")
       val response = client.search(searchRequest)
-      Assert.assertEquals(response.getHits.getHits.length, 1)
+      Assert.assertEquals(response.getHits.getHits.length, 9)
       val anomaly = response.getHits.getAt(0).getSourceAsMap
       Assert.assertEquals(anomaly.get("tags").asInstanceOf[java.util.Map[String, String]].get(SERVICE_TAG_KEY), svc)
     }
