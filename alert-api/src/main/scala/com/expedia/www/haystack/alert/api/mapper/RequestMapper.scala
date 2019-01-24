@@ -25,7 +25,7 @@ import scala.collection.JavaConverters._
 
 object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
 
-  def mapCreateSubscriptionRequest(request: CreateSubscriptionRequest): model.CreateSubscriptionRequest = {
+  def mapCreateSubscriptionRequest(request: CreateSubscriptionRequest): List[model.CreateSubscriptionRequest] = {
     val createSubscriptionRequest = new model.CreateSubscriptionRequest()
     val user = new User
     user.setId(request.getUser.getUsername)
@@ -33,16 +33,16 @@ object RequestMapper extends ExpressionTreeMapper with AlertDispatcherMapper {
     val alertDispatchers = mapAlertDispatcher(request.getSubscriptionRequest.getDispatchersList.asScala.toList)
     createSubscriptionRequest.setDispatchers(alertDispatchers.asJava)
     createSubscriptionRequest.setExpression(mapExpressionTree(request.getSubscriptionRequest.getExpressionTree))
-    createSubscriptionRequest
+    List(createSubscriptionRequest)
   }
 
-  def mapUpdateSubscriptionRequest(request : UpdateSubscriptionRequest) : model.UpdateSubscriptionRequest = {
+  def mapUpdateSubscriptionRequest(request : UpdateSubscriptionRequest) : List[model.UpdateSubscriptionRequest] = {
     val updateSubscriptionRequest = new model.UpdateSubscriptionRequest()
     updateSubscriptionRequest.setId(request.getSubscriptionId)
     val alertDispatchers = mapAlertDispatcher(request.getSubscriptionRequest.getDispatchersList.asScala.toList)
     updateSubscriptionRequest.setDispatchers(alertDispatchers.asJava)
     updateSubscriptionRequest.setExpression(mapExpressionTree(request.getSubscriptionRequest.getExpressionTree))
-    updateSubscriptionRequest
+    List(updateSubscriptionRequest)
   }
 
   def mapDeleteSubscriptionRequest(request: DeleteSubscriptionRequest) : String = {
