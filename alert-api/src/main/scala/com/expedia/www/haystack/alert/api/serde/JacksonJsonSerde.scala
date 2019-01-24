@@ -29,6 +29,7 @@ class JacksonJsonSerde {
     mapper.registerModule(DefaultScalaModule)
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     mapper.setSerializationInclusion(Include.NON_NULL)
+    mapper.setSerializationInclusion(Include.NON_EMPTY)
     mapper
   }
 

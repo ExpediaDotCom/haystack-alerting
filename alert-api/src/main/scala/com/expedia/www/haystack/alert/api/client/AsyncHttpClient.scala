@@ -38,7 +38,7 @@ class AsyncHttpClient(httpClient : CloseableHttpAsyncClient)(implicit val execut
 
   def executePost(url: String, contentType: String, content: Array[Byte]): Future[HttpResponse] = {
     val httpPost = new HttpPost(url)
-    httpPost.addHeader("Content-type", contentType)
+    httpPost.addHeader("Content-Type", contentType)
     val entity = new ByteArrayEntity(content)
     httpPost.setEntity(entity)
     val promise = Promise[HttpResponse]()
@@ -49,7 +49,7 @@ class AsyncHttpClient(httpClient : CloseableHttpAsyncClient)(implicit val execut
 
   def executePut(url: String, contentType: String, content: Array[Byte]): Future[HttpResponse] = {
     val httpPut = new HttpPut(url)
-    httpPut.addHeader("Content-type", contentType)
+    httpPut.addHeader("Content-Type", contentType)
     val entity = new ByteArrayEntity(content)
     httpPut.setEntity(entity)
     val promise = Promise[HttpResponse]()
@@ -60,7 +60,7 @@ class AsyncHttpClient(httpClient : CloseableHttpAsyncClient)(implicit val execut
 
   def executeGet(url: String, contentType: String): Future[HttpResponse] = {
     val httpGet = new HttpGet(url)
-    httpGet.addHeader("Content-type", contentType)
+    httpGet.addHeader("Content-Type", contentType)
     val promise = Promise[HttpResponse]()
     executeRequest(httpGet, promise)
     promise.future
@@ -69,7 +69,7 @@ class AsyncHttpClient(httpClient : CloseableHttpAsyncClient)(implicit val execut
 
   def executeDelete(url: String, contentType: String): Future[HttpResponse] = {
     val httpDelete = new HttpDelete(url)
-    httpDelete.addHeader("Content-type", contentType)
+    httpDelete.addHeader("Content-Type", contentType)
     val promise = Promise[HttpResponse]()
     executeRequest(httpDelete, promise)
     promise.future
