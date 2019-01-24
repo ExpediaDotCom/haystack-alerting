@@ -25,12 +25,14 @@ import com.expedia.www.haystack.alert.api.mapper.{RequestMapper, ResponseMapper}
 import com.expedia.www.haystack.alert.api.serde.JacksonJsonSerde
 import com.expedia.www.haystack.alert.api.utils.RetryOnError
 import org.apache.http.util.EntityUtils
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.duration.{FiniteDuration, _}
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncHttpClient)(implicit val executor: ExecutionContextExecutor) extends RetryOnError {
 
+  private val LOGGER = LoggerFactory.getLogger(classOf[SubscriptionManager])
   private val CONTENT_TYPE = "application/json"
   private val SEARCH_SUBSCRIPTION_SUFFIX = "/search"
   val jacksonJsonSerde = new JacksonJsonSerde
@@ -51,6 +53,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
       .map(response => {
         val statusCode = response.getStatusLine.getStatusCode
         if (statusCode >= 200 && statusCode <= 299) {
+          LOGGER.info(s"create subscription request completed with response ${EntityUtils.toString(response.getEntity)}")
           val subscriptionId = jacksonJsonSerde.deserialize[List[String]](EntityUtils.toByteArray(response.getEntity)).get.head
           CreateSubscriptionResponse.newBuilder().setSubscriptionId(subscriptionId).build()
         } else {
@@ -68,6 +71,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
       .map(response => {
         val statusCode = response.getStatusLine.getStatusCode
         if (statusCode >= 200 && statusCode <= 299) {
+          LOGGER.info(s"update subscription request completed with response ${EntityUtils.toString(response.getEntity)}")
           Empty.newBuilder().build()
         } else {
           throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
@@ -84,7 +88,8 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
       .map(response => {
         val statusCode = response.getStatusLine.getStatusCode
         if (statusCode >= 200 && statusCode <= 299) {
-          val searchSubscriptionResponse = jacksonJsonSerde.deserialize[List[ model.SubscriptionResponse]](EntityUtils.toByteArray(response.getEntity))
+          LOGGER.info(s"search subscription request completed with response ${EntityUtils.toString(response.getEntity)}")
+          val searchSubscriptionResponse = jacksonJsonSerde.deserialize[List[model.SubscriptionResponse]](EntityUtils.toByteArray(response.getEntity))
           ResponseMapper.mapSearchSubscriptionResponse(searchSubscriptionResponse)
         } else {
           throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
@@ -100,6 +105,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
     }.map(response => {
       val statusCode = response.getStatusLine.getStatusCode
       if (statusCode >= 200 && statusCode <= 299) {
+        LOGGER.info(s"get subscription request completed with response ${EntityUtils.toString(response.getEntity)}")
         val subscriptionResponse = jacksonJsonSerde.deserialize[model.SubscriptionResponse](EntityUtils.toByteArray(response.getEntity)).get
         ResponseMapper.mapSubscriptionResponse(subscriptionResponse)
       } else {
@@ -116,6 +122,7 @@ class SubscriptionManager(appConfiguration: AppConfiguration, httpClient: AsyncH
     }.map(response => {
       val statusCode = response.getStatusLine.getStatusCode
       if (statusCode >= 200 && statusCode <= 299) {
+        LOGGER.info(s"delete subscription request completed")
         Empty.newBuilder().build()
       } else {
         throw new RuntimeException(s"Failed with status code $statusCode with error ${EntityUtils.toString(response.getEntity)}")
