@@ -43,6 +43,8 @@ class AppIntegrationSpec extends FunSpec with Matchers {
   private val KAFKA_TOPIC = "anomalies"
   private val SERVICE_TAG_KEY = "service"
   private val OPERATION_TAG_KEY = "operation"
+  private val PRODUCT_TAG_KEY = "product"
+  private val PRODUCT_TAG_VALUE = "haystack"
   private val currentTimeSec = System.currentTimeMillis / 1000
 
   private val mapper = new ObjectMapper()
@@ -65,7 +67,7 @@ class AppIntegrationSpec extends FunSpec with Matchers {
       produceAnomaliesInKakfa()
 
       // sleep for kafka to flush
-      Thread.sleep(5000)
+      Thread.sleep(10000)
       verifyElasticSearchData()
     }
   }
@@ -102,7 +104,8 @@ class AppIntegrationSpec extends FunSpec with Matchers {
   }
 
   private def createAnomalyJson(serviceName: String): Array[Byte] = {
-    val tags = Map(SERVICE_TAG_KEY -> serviceName, OPERATION_TAG_KEY -> "/foo", MetricDefinition.MTYPE -> "gauge", MetricDefinition.UNIT -> "microseconds").asJava
+    val tags = Map(SERVICE_TAG_KEY -> serviceName, OPERATION_TAG_KEY -> "/foo", MetricDefinition.MTYPE -> "gauge",
+      MetricDefinition.UNIT -> "microseconds", PRODUCT_TAG_KEY -> PRODUCT_TAG_VALUE).asJava
     val tagCollection = new TagCollection(tags)
     val metricDef = new MetricDefinition("duration", tagCollection, TagCollection.EMPTY)
     val metricData = new MetricData(metricDef, 100.2, currentTimeSec)
