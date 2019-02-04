@@ -34,6 +34,8 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 object StoreTask {
   private val LOGGER = LoggerFactory.getLogger(classOf[StoreTask])
+  private val FILTER_TAG_KEY = "product"
+  private val FILTER_TAG_VALUE = "haystack"
   private def createConsumer(taskId: Integer, cfg: KafkaConfig): KafkaConsumer[String, Anomaly] = {
     val props = cfg.consumerConfig
     props.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
@@ -135,7 +137,10 @@ class StoreTask(taskId: Int, cfg: KafkaConfig, store: AnomalyStore, parallelWrit
           val saveAnomalies = mutable.ListBuffer[AnomalyWithId]()
 
           for (record <- records.asScala) {
-            saveAnomalies += transform(record)
+            val anomalyWithId = transform(record)
+            if (anomalyWithId.anomaly.tags.containsKey(FILTER_TAG_KEY) && anomalyWithId.anomaly.tags.get(FILTER_TAG_KEY).equalsIgnoreCase(FILTER_TAG_VALUE)) {
+              saveAnomalies += anomalyWithId
+            }
             updateOffset(offsets, record)
           }
 
@@ -147,7 +152,11 @@ class StoreTask(taskId: Int, cfg: KafkaConfig, store: AnomalyStore, parallelWrit
 
           val callback = new StoreWriteCallback(offsets)
           callbacks.push(callback)
-          store.write(saveAnomalies, callback)
+          if(saveAnomalies.nonEmpty) {
+            store.write(saveAnomalies, callback)
+          } else {
+            callback.onComplete(null)
+          }
 
           // commit offsets
           commit(committableOffsets.asJava, 0)
