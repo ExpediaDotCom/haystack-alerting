@@ -28,11 +28,11 @@ class AnomalyDeserializerSpec extends FunSpec with Matchers {
         }
 
         it("should handle good anomaly data") {
-            val anomalyJson = "{\"metricData\":{\"metricDefinition\":{\"key\":null,\"tags\":{\"kv\":{\"mtype\":\"rate\",\"operationName\":\"/foo\",\"unit\":\"someunit\",\"service\":\"testapp\"},\"v\":[],\"empty\":false},\"meta\":{\"kv\":{},\"v\":[],\"empty\":true}},\"value\":10.0,\"timestamp\":1544354976}}"
+            val anomalyJson = """{"metricData":{"metricDefinition":{"tags":{"kv":{"mtype":"gauge","stat":"count","unit":"metric","product":"haystack","interval":"FiveMinute","operationName":"op1","serviceName":"svc"},"v":[]},"meta":{"kv":{},"v":[]},"key":"failure-count"},"value":11472.0,"timestamp":1535094600},"detectorUuid":"0e1c3968-a9fe-33a7-9c89-37a2142b3051","detectorType":"ewma-detector","anomalyResult":{"detectorUUID":"0e1c3968-a9fe-33a7-9c89-37a2142b3051","metricData":{"metricDefinition":{"tags":{"kv":{"mtype":"gauge","stat":"count","unit":"metric","product":"haystack","interval":"FiveMinute","operationName":"op1","serviceName":"svc"},"v":[]},"meta":{"kv":{},"v":[]},"key":"failure-count"},"value":11472.0,"timestamp":1535094600},"anomalyLevel":"NORMAL","predicted":4769.614801738369,"thresholds":{"upperStrong":26046.309426122076,"upperWeak":20431.44230539696,"lowerStrong":-18872.627539678855,"lowerWeak":-13257.760418953738}}}"""
             val anomaly = deser.deserialize("", anomalyJson.getBytes("utf-8"))
-            anomaly.timestamp shouldBe 1544354976l
-            anomaly.tags.get("service") shouldEqual "testapp"
-            anomaly.tags.get("operationName") shouldEqual "/foo"
+            anomaly.timestamp shouldBe 1535094600l
+            anomaly.tags.get("serviceName") shouldEqual "svc"
+            anomaly.tags.get("operationName") shouldEqual "op1"
         }
     }
 }

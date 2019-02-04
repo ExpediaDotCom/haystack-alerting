@@ -36,7 +36,7 @@ object AnomalyMapper {
         case (key, value) => {
           val anomalies = value.map(data => {
             val expectedValue = parseValue(data.anomaly.tags.get(AnomalyTagKeys.EXPECTED_VALUE))
-            val observedValue = parseValue(data.anomaly.tags.get(AnomalyTagKeys.OBSERVERD_VALUE))
+            val observedValue = parseValue(data.anomaly.tags.get(AnomalyTagKeys.OBSERVED_VALUE))
             Anomaly.newBuilder().setTimestamp(data.anomaly.timestamp)
               .setExpectedValue(expectedValue).setObservedValue(observedValue).build()
           })

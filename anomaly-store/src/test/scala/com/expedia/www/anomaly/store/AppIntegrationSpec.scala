@@ -16,9 +16,11 @@
 
 package com.expedia.www.anomaly.store
 
-import java.util.Properties
+import java.util.{Properties, UUID}
 import java.util.concurrent.Executors
 
+import com.expedia.adaptivealerting.core.anomaly.{AnomalyLevel, AnomalyResult}
+import com.expedia.adaptivealerting.core.data.MappedMetricData
 import com.expedia.metrics.jackson.MetricsJavaModule
 import com.expedia.metrics.{MetricData, MetricDefinition, TagCollection}
 import com.expedia.www.anomaly.store.scalatest.IntegrationSuite
@@ -109,6 +111,16 @@ class AppIntegrationSpec extends FunSpec with Matchers {
     val tagCollection = new TagCollection(tags)
     val metricDef = new MetricDefinition("duration", tagCollection, TagCollection.EMPTY)
     val metricData = new MetricData(metricDef, 100.2, currentTimeSec)
-    mapper.writeValueAsBytes(AnomalyResult(metricData))
+    val mappedMetricData = new MappedMetricData()
+    mappedMetricData.setMetricData(metricData)
+    mappedMetricData.setDetectorType(UUID.randomUUID().toString)
+    mappedMetricData.setDetectorType("EWMA")
+    val anomalyResult = new AnomalyResult()
+    anomalyResult.setAnomalyLevel(AnomalyLevel.STRONG)
+    anomalyResult.setDetectorUUID(mappedMetricData.getDetectorUuid)
+    anomalyResult.setMetricData(metricData)
+    anomalyResult.setPredicted(500.2)
+    mappedMetricData.setAnomalyResult(anomalyResult)
+    mapper.writeValueAsBytes(mappedMetricData)
   }
 }
