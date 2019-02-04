@@ -24,7 +24,6 @@ import com.expedia.adaptivealerting.core.data.MappedMetricData
 import com.expedia.metrics.jackson.MetricsJavaModule
 import com.expedia.metrics.{MetricData, MetricDefinition, TagCollection}
 import com.expedia.www.anomaly.store.scalatest.IntegrationSuite
-import com.expedia.www.anomaly.store.serde.AnomalyResult
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.http.HttpHost
