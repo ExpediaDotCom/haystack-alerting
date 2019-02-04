@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import com.expedia.www.anomaly.store.backend.api.{Anomaly, AnomalyStore, AnomalyWithId}
 import com.expedia.www.anomaly.store.config.KafkaConfig
 import com.expedia.www.anomaly.store.serde.AnomalyDeserializer
-import com.expedia.www.haystack.alerting.commons.AnomalyTagKeys
+import com.expedia.www.anomaly.store.util.WhitelistAnomaly
 import org.apache.kafka.clients.consumer._
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.errors.WakeupException
@@ -35,10 +35,6 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 object StoreTask {
   private val LOGGER = LoggerFactory.getLogger(classOf[StoreTask])
-  private val FILTER_TAG_KEY = "product"
-  private val FILTER_TAG_VALUE = "haystack"
-  private val STRONG_ANOMALY_LEVEL = "strong"
-  private val WEAK_ANOMALY_LEVEL = "weak"
 
   private def createConsumer(taskId: Integer, cfg: KafkaConfig): KafkaConsumer[String, Anomaly] = {
     val props = cfg.consumerConfig
@@ -142,11 +138,7 @@ class StoreTask(taskId: Int, cfg: KafkaConfig, store: AnomalyStore, parallelWrit
 
           for (record <- records.asScala) {
             val anomalyWithId = transform(record)
-            if (anomalyWithId.anomaly.tags.containsKey(FILTER_TAG_KEY)
-                && anomalyWithId.anomaly.tags.get(FILTER_TAG_KEY).equalsIgnoreCase(FILTER_TAG_VALUE)
-                && (STRONG_ANOMALY_LEVEL.equalsIgnoreCase(anomalyWithId.anomaly.tags.get(AnomalyTagKeys.ANOMALY_LEVEL)) ||
-                      WEAK_ANOMALY_LEVEL.equalsIgnoreCase(anomalyWithId.anomaly.tags.get(AnomalyTagKeys.ANOMALY_LEVEL)))
-            ) {
+            if (WhitelistAnomaly.shouldWhitelistAnomaly(anomalyWithId)) {
               saveAnomalies += anomalyWithId
             }
             updateOffset(offsets, record)
