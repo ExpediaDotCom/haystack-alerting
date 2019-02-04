@@ -18,9 +18,11 @@ package com.expedia.www.anomaly.store.serde
 
 import java.util
 
+import com.expedia.adaptivealerting.core.data.MappedMetricData
 import com.expedia.metrics.MetricData
 import com.expedia.metrics.jackson.MetricsJavaModule
 import com.expedia.www.anomaly.store.backend.api.Anomaly
+import com.expedia.www.haystack.alerting.commons.AnomalyTagKeys
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.kafka.common.serialization.Deserializer
@@ -42,9 +44,16 @@ class AnomalyDeserializer extends Deserializer[Anomaly] {
   override def deserialize(s: String, bytes: Array[Byte]): Anomaly = {
     if (bytes == null || bytes.isEmpty) return null
 
-    val result = mapper.readValue(bytes, classOf[AnomalyResult])
-    val tags = result.metricData.getMetricDefinition.getTags.getKv
+    val result = mapper.readValue(bytes, classOf[MappedMetricData])
+    val tags = result.getMetricData.getMetricDefinition.getTags.getKv
+    val expectedValue = result.getAnomalyResult.getPredicted
+    val anomalyLevel = result.getAnomalyResult.getAnomalyLevel
+    val observedValue = result.getMetricData.getValue
+
+    tags.put(AnomalyTagKeys.EXPECTED_VALUE, expectedValue.toString)
+    tags.put(AnomalyTagKeys.OBSERVED_VALUE, observedValue.toString)
+    tags.put(AnomalyTagKeys.ANOMALY_LEVEL, anomalyLevel.toString)
     // timestamp is in seconds
-    Anomaly(tags, result.metricData.getTimestamp)
+    Anomaly(tags, result.getMetricData.getTimestamp)
   }
 }
