@@ -76,6 +76,7 @@
     </developers>
 
     <modules>
+        <module>commons</module>
         <module>storage-backends</module>
         <module>alert-api</module>
         <module>anomaly-store</module>
@@ -133,6 +134,7 @@
         <jackson.version>2.9.5</jackson.version>
         <skipGpg>true</skipGpg>
         <mockito-core.version>2.23.0</mockito-core.version>
+        <adaptive-alerting.version>1.0.0-SNAPSHOT</adaptive-alerting.version>
     </properties>
 
 
@@ -242,8 +244,14 @@
 
             <dependency>
                 <groupId>com.expedia.alertmanager</groupId>
-                <artifactId>alert-manager</artifactId>
+                <artifactId>alert-manager-api</artifactId>
                 <version>${alert-manager.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.expedia.adaptivealerting</groupId>
+                <artifactId>adaptive-alerting-core</artifactId>
+                <version>${adaptive-alerting.version}</version>
             </dependency>
 
             <dependency>

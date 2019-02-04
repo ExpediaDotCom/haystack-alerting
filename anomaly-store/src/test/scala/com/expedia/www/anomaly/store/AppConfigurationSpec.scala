@@ -37,7 +37,7 @@ class AppConfigurationSpec extends FunSpec with Matchers {
             kafka.wakeupTimeoutInMillis shouldBe 5000
             kafka.topic shouldEqual "anomalies"
 
-            kafka.consumerConfig.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) shouldEqual "localhost:9092"
+            kafka.consumerConfig.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) shouldEqual "kafkasvc:9092"
             kafka.consumerConfig.get(ConsumerConfig.GROUP_ID_CONFIG) shouldEqual "haystack-anomaly-store"
             kafka.consumerConfig.get(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG) shouldEqual "latest"
             kafka.consumerConfig.get(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG) shouldEqual "false"
@@ -48,7 +48,7 @@ class AppConfigurationSpec extends FunSpec with Matchers {
             pluginConfig.directory shouldEqual "../storage-backends/elasticsearch/target"
             pluginConfig.jarName shouldEqual "elasticsearch-store.jar"
             pluginConfig.name shouldEqual "elasticsearch"
-            pluginConfig.conf.entrySet().toString shouldEqual "[host=Quoted(\"http://localhost:9200\")]"
+            pluginConfig.conf.entrySet().toString shouldEqual "[host=Quoted(\"http://elasticsearch:9200\")]"
         }
     }
 }

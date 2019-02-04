@@ -52,6 +52,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.expedia.www</groupId>
+            <artifactId>haystack-alerting-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
@@ -111,7 +118,6 @@
         <dependency>
             <groupId>com.expedia.alertmanager</groupId>
             <artifactId>alert-manager-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

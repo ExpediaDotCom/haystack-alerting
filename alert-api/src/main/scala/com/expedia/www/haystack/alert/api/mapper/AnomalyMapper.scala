@@ -19,6 +19,7 @@ package com.expedia.www.haystack.alert.api.mapper
 
 import com.expedia.open.tracing.api.anomaly._
 import com.expedia.www.anomaly.store.backend.api.AnomalyWithId
+import com.expedia.www.haystack.alerting.commons.AnomalyTagKeys
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.ListMap
@@ -26,8 +27,6 @@ import scala.util.Try
 
 object AnomalyMapper {
 
-  private val EXPECTED_VALUE_KEY = "expectedValue"
-  private val OBSERVERD_VALUE_KEY = "observedValue"
   private val FALLBACK_VALUE = -1l
 
   def getSearchAnomaliesResponse(results: List[Try[Seq[AnomalyWithId]]]): SearchAnomaliesResponse = {
@@ -36,8 +35,8 @@ object AnomalyMapper {
       {
         case (key, value) => {
           val anomalies = value.map(data => {
-            val expectedValue = parseValue(data.anomaly.tags.get(EXPECTED_VALUE_KEY))
-            val observedValue = parseValue(data.anomaly.tags.get(OBSERVERD_VALUE_KEY))
+            val expectedValue = parseValue(data.anomaly.tags.get(AnomalyTagKeys.EXPECTED_VALUE))
+            val observedValue = parseValue(data.anomaly.tags.get(AnomalyTagKeys.OBSERVED_VALUE))
             Anomaly.newBuilder().setTimestamp(data.anomaly.timestamp)
               .setExpectedValue(expectedValue).setObservedValue(observedValue).build()
           })

@@ -16,13 +16,14 @@
 
 package com.expedia.www.anomaly.store
 
-import java.util.Properties
+import java.util.{Properties, UUID}
 import java.util.concurrent.Executors
 
+import com.expedia.adaptivealerting.core.anomaly.{AnomalyLevel, AnomalyResult}
+import com.expedia.adaptivealerting.core.data.MappedMetricData
 import com.expedia.metrics.jackson.MetricsJavaModule
 import com.expedia.metrics.{MetricData, MetricDefinition, TagCollection}
 import com.expedia.www.anomaly.store.scalatest.IntegrationSuite
-import com.expedia.www.anomaly.store.serde.AnomalyResult
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.http.HttpHost
@@ -109,6 +110,17 @@ class AppIntegrationSpec extends FunSpec with Matchers {
     val tagCollection = new TagCollection(tags)
     val metricDef = new MetricDefinition("duration", tagCollection, TagCollection.EMPTY)
     val metricData = new MetricData(metricDef, 100.2, currentTimeSec)
-    mapper.writeValueAsBytes(AnomalyResult(metricData))
+    val detectorUUID = UUID.randomUUID()
+    val anomalyResult = new AnomalyResult()
+    anomalyResult.setAnomalyLevel(AnomalyLevel.STRONG)
+    anomalyResult.setDetectorUUID(detectorUUID)
+    anomalyResult.setMetricData(metricData)
+    anomalyResult.setPredicted(500.2)
+    val mappedMetricData = new MappedMetricData()
+    mappedMetricData.setMetricData(metricData)
+    mappedMetricData.setDetectorUuid(detectorUUID)
+    mappedMetricData.setDetectorType("EWMA")
+    mappedMetricData.setAnomalyResult(anomalyResult)
+    mapper.writeValueAsBytes(mappedMetricData)
   }
 }
