@@ -92,7 +92,7 @@
         <protobuf.version>3.3.1</protobuf.version>
         <easymock.version>3.4</easymock.version>
         <haystack.logback.metrics.appender.version>0.1.12</haystack.logback.metrics.appender.version>
-        <haystack.commons.version>1.0.58</haystack.commons.version>
+        <haystack.commons.version>1.0.62</haystack.commons.version>
         <grpc.version>1.7.1</grpc.version>
         <netty.handler.version>4.1.16.Final</netty.handler.version>
         <protobuf.version>3.4.0</protobuf.version>
