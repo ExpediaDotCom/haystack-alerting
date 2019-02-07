@@ -48,7 +48,7 @@ class GrpcHandler(operationName: String)(implicit val executor: ExecutionContext
         responseObserver.onNext(response)
         responseObserver.onCompleted()
         time.stop()
-        LOGGER.info(s"service invocation for operation=$operationName and request=${request.toString} completed successfully")
+        LOGGER.info(s"service invocation for operation=$operationName and request=${request.toString} completed successfully and response is ${response.toString}")
 
       case Failure(ex) =>
         responseObserver.onError(Status.fromThrowable(ex).asRuntimeException())

@@ -27,7 +27,7 @@ import scala.util.Try
 
 object AnomalyMapper {
 
-  private val FALLBACK_VALUE = -1l
+  private val FALLBACK_VALUE = -1.0
 
   def getSearchAnomaliesResponse(results: List[Try[Seq[AnomalyWithId]]]): SearchAnomaliesResponse = {
     val searchAnomalyResponses: List[SearchAnamolyResponse] = results.flatMap(result => result.get)
@@ -51,8 +51,8 @@ object AnomalyMapper {
     ListMap(label.toSeq.sortBy(_._1): _*).map(tuple => s"${tuple._1}=${tuple._2}").mkString(",")
   }
 
-  private def parseValue(value: String): Long = {
-    Try(value.toLong).toOption match {
+  private def parseValue(value: String): Double = {
+    Try(value.toDouble).toOption match {
       case Some(v) => v
       case None => FALLBACK_VALUE
     }
