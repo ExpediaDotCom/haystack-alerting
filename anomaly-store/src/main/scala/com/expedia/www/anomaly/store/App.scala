@@ -23,6 +23,7 @@ import java.util.ServiceLoader
 import com.codahale.metrics.JmxReporter
 import com.expedia.www.anomaly.store.backend.api.AnomalyStore
 import com.expedia.www.anomaly.store.config.{AppConfiguration, PluginConfig}
+import com.expedia.www.haystack.commons.logger.LoggerUtils
 import com.expedia.www.haystack.commons.metrics.MetricsSupport
 import org.slf4j.LoggerFactory
 
@@ -36,17 +37,34 @@ object App extends scala.App with MetricsSupport {
   }
 
   val jmxReporter: JmxReporter = JmxReporter.forRegistry(metricRegistry).build()
-  val store = loadAndInitializePlugin(appConfig.pluginConfig)
-  val controller = new AnomalyStoreController(appConfig.kafkaConfig, store, new HealthController(appConfig.healthStatusFilePath))
+  startApp()
 
-  jmxReporter.start()
-  controller.start()
-  Runtime.getRuntime.addShutdownHook(new Thread(() => {
-    LOGGER.info("Shutdown hook is invoked, tearing down the application.")
-    closeQuietly(controller)
-    store.close()
-    jmxReporter.close()
-  }))
+
+  private def startApp() = {
+    try {
+      val store = loadAndInitializePlugin(appConfig.pluginConfig)
+      startService(store)
+    } catch {
+      case ex: Throwable =>
+        LOGGER.error("Fatal error observed while running the app", ex)
+        LoggerUtils.shutdownLogger()
+        jmxReporter.close()
+        System.exit(1)
+    }
+  }
+
+
+  private def startService(store:AnomalyStore): Unit = {
+    val controller = new AnomalyStoreController(appConfig.kafkaConfig, store, new HealthController(appConfig.healthStatusFilePath))
+    jmxReporter.start()
+    controller.start()
+    Runtime.getRuntime.addShutdownHook(new Thread(() => {
+      LOGGER.info("Shutdown hook is invoked, tearing down the application.")
+      closeQuietly(controller)
+      store.close()
+      jmxReporter.close()
+    }))
+  }
 
 
   @throws[Exception]
