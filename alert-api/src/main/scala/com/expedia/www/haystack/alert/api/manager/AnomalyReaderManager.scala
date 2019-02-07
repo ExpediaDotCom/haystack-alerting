@@ -39,6 +39,7 @@ class AnomalyReaderManager(stores: List[AnomalyStore])(implicit val executor: Ex
             LOGGER.error(s"Error in fetching anomalies from store", ex)
             promise.failure(ex)
           } else {
+            LOGGER.info(s"total anomalies are ${anomalies.toList.length}")
             promise.success(anomalies)
           }
         })
