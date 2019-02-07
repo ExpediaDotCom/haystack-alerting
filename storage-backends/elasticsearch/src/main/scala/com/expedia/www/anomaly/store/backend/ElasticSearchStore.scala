@@ -23,6 +23,7 @@ import java.util.stream.Collectors
 import com.expedia.www.anomaly.store.backend.api.{AnomalyStore, AnomalyWithId}
 import com.typesafe.config.Config
 import org.apache.http.HttpHost
+import org.apache.http.client.config.RequestConfig
 import org.apache.http.entity.ContentType
 import org.apache.http.nio.entity.NStringEntity
 import org.elasticsearch.client.{Response, RestClient, RestHighLevelClient}
@@ -65,7 +66,8 @@ class ElasticSearchStore extends AnomalyStore {
     val indexNamePrefix = if (config.hasPath(INDEX_PREFIX_CONFIG_KEY)) config.getString(INDEX_PREFIX_CONFIG_KEY) else ElasticSearchStore.DEFAULT_INDEX_PREFIX
     val esHost = if (config.hasPath(HOST_CONFIG_KEY)) config.getString(HOST_CONFIG_KEY) else "http://localhost:9200"
 
-    this.client = new RestHighLevelClient(RestClient.builder(HttpHost.create(esHost)))
+    this.client = new RestHighLevelClient(RestClient.builder(HttpHost.create(esHost)).setRequestConfigCallback((builder: RequestConfig.Builder) => {
+        builder.setConnectTimeout(60000).setSocketTimeout(60000)}).setMaxRetryTimeoutMillis(60000))
     this.reader = new Reader(client, config, indexNamePrefix, logger)
     this.writer = new Writer(client, config, indexNamePrefix, logger)
     applyIndexTemplate(config)
