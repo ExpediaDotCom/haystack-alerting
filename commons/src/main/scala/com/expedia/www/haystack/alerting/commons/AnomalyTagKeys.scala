@@ -39,5 +39,5 @@ object AnomalyTagKeys {
   val OBSERVED_VALUE = "observedValue"
   val EXPECTED_VALUE = "expectedValue"
   val ANOMALY_LEVEL = "anomalyLevel"
-  val KEY = "key"
+  val METRIC_KEY = "metric_key"
 }
