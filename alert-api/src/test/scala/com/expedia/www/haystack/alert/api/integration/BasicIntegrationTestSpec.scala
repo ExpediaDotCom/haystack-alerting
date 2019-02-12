@@ -26,6 +26,7 @@ import com.expedia.open.tracing.api.subscription.SubscriptionManagementGrpc._
 import com.expedia.open.tracing.api.subscription._
 import com.expedia.www.anomaly.store.backend.api.{Anomaly, AnomalyWithId}
 import com.expedia.www.haystack.alert.api.{App, IntegrationSuite}
+import com.expedia.www.haystack.alerting.commons.AnomalyTagKeys
 import io.grpc.ManagedChannelBuilder
 import io.grpc.health.v1.HealthGrpc
 import org.scalatest._
@@ -120,9 +121,11 @@ trait BasicIntegrationTestSpec extends WordSpec with GivenWhenThen with Matchers
 
   protected def getAnomalies: List[AnomalyWithId] = {
     val currentTimestamp = Instant.now().toEpochMilli
-    val labels1 = Map("product" -> "haystack", "servicename" -> "def").asJava
+    val labels1 = Map("product" -> "haystack", "servicename" -> "def", AnomalyTagKeys.EXPECTED_VALUE -> "40.6", AnomalyTagKeys.ANOMALY_LEVEL -> "WEAK").asJava
     val labels2 = Map("product" -> "haystack", "servicename" -> "abc").asJava
-    List(AnomalyWithId("1", new Anomaly(labels1, currentTimestamp)), AnomalyWithId("2", new Anomaly(labels2, currentTimestamp)))
+    val labels3 = Map("product" -> "haystack", "servicename" -> "def", AnomalyTagKeys.EXPECTED_VALUE -> "45.6", AnomalyTagKeys.ANOMALY_LEVEL -> "STRONG").asJava
+    List(AnomalyWithId("1", new Anomaly(labels1, currentTimestamp)), AnomalyWithId("2", new Anomaly(labels2, currentTimestamp)),
+      AnomalyWithId("3", new Anomaly(labels3, currentTimestamp + 5000)))
   }
 
   protected def searchAnomaliesRequest(requestLabels : Map[String, String]): SearchAnamoliesRequest = {
