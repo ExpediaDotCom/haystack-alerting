@@ -28,6 +28,7 @@ import scala.util.Try
 object AnomalyMapper {
 
   private val FALLBACK_VALUE = -1.0
+  private val ANOMALY_VALUE_LABELS  = List(AnomalyTagKeys.OBSERVED_VALUE, AnomalyTagKeys.EXPECTED_VALUE)
 
   def getSearchAnomaliesResponse(results: List[Try[Seq[AnomalyWithId]]]): SearchAnomaliesResponse = {
     val searchAnomalyResponses: List[SearchAnamolyResponse] = results.flatMap(result => result.get)
@@ -48,7 +49,8 @@ object AnomalyMapper {
 
 
   private def getLabelsAsString(label: Map[String, String]): String = {
-    ListMap(label.toSeq.sortBy(_._1): _*).map(tuple => s"${tuple._1}=${tuple._2}").mkString(",")
+    val metricDefinitionMap = label.filterKeys(key => !ANOMALY_VALUE_LABELS.contains(key))
+    ListMap(metricDefinitionMap.toSeq.sortBy(_._1): _*).map(tuple => s"${tuple._1}=${tuple._2}").mkString(",")
   }
 
   private def parseValue(value: String): Double = {
