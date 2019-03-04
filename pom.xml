@@ -111,7 +111,7 @@
         <scala.major.minor.version>${scala.major.version}.${scala.minor.version}</scala.major.minor.version>
         <scala-library.version>${scala.major.minor.version}.${scala.maintenance.version}</scala-library.version>
 
-        <jackson-module-scala.version>2.9.7</jackson-module-scala.version>
+        <jackson-module-scala.version>2.9.8</jackson-module-scala.version>
         <pegdown.version>1.6.0</pegdown.version>
         <scalatest.version>3.0.3</scalatest.version>
         <junit.version>4.12</junit.version>
