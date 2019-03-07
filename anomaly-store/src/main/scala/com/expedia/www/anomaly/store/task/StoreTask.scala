@@ -138,7 +138,7 @@ class StoreTask(taskId: Int, cfg: KafkaConfig, store: AnomalyStore, parallelWrit
 
           for (record <- records.asScala) {
             val anomalyWithId = transform(record)
-            if (WhitelistAnomaly.shouldWhitelistAnomaly(anomalyWithId)) {
+            if (anomalyWithId.anomaly != null && WhitelistAnomaly.shouldWhitelistAnomaly(anomalyWithId)) {
               saveAnomalies += anomalyWithId
             }
             updateOffset(offsets, record)
