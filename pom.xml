@@ -101,7 +101,7 @@
         <httpcore.version>4.4.10</httpcore.version>
         <elasticsearch.version>6.0.1</elasticsearch.version>
         <kafka-version>1.1.1</kafka-version>
-        <metrics.java.version>0.6.0</metrics.java.version>
+        <metrics.java.version>0.11.0</metrics.java.version>
 
         <!--Compiler Properties -->
         <project.jdk.version>1.8</project.jdk.version>
@@ -258,6 +258,13 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpasyncclient</artifactId>
                 <version>${httpasyncclient.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.expedia</groupId>
+                <artifactId>metrics-java</artifactId>
+                <version>${metrics.java.version}</version>
             </dependency>
 
             <dependency>

@@ -25,9 +25,11 @@ import com.expedia.www.haystack.alerting.commons.AnomalyTagKeys
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.kafka.common.serialization.Deserializer
+import org.slf4j.LoggerFactory
 
 
 class AnomalyDeserializer extends Deserializer[Anomaly] {
+  private val LOGGER = LoggerFactory.getLogger(classOf[AnomalyDeserializer])
   private val mapper = new ObjectMapper()
     .registerModule(new DefaultScalaModule)
     .registerModule(new MetricsJavaModule)
@@ -41,7 +43,12 @@ class AnomalyDeserializer extends Deserializer[Anomaly] {
   override def deserialize(s: String, bytes: Array[Byte]): Anomaly = {
     if (bytes == null || bytes.isEmpty) return null
 
-    val result = mapper.readValue(bytes, classOf[MappedMetricData])
+    val result = try {
+      mapper.readValue(bytes, classOf[MappedMetricData])
+    } catch {
+      case ex: Exception => LOGGER.error("Error in deserializing data", ex)
+      return null
+    }
     val tags = new util.HashMap[String, String](result.getMetricData.getMetricDefinition.getTags.getKv)
     val expectedValue = result.getAnomalyResult.getPredicted
     val anomalyLevel = result.getAnomalyResult.getAnomalyLevel
