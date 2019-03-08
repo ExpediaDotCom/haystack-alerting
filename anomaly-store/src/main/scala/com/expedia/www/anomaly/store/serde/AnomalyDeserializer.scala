@@ -55,7 +55,9 @@ class AnomalyDeserializer extends Deserializer[Anomaly] {
     val observedValue = result.getMetricData.getValue
 
     tags.put(AnomalyTagKeys.METRIC_KEY, result.getMetricData.getMetricDefinition.getKey)
-    tags.put(AnomalyTagKeys.EXPECTED_VALUE, expectedValue.toString)
+    if(expectedValue != null) {
+      tags.put(AnomalyTagKeys.EXPECTED_VALUE, expectedValue.toString)
+    }
     tags.put(AnomalyTagKeys.OBSERVED_VALUE, observedValue.toString)
     tags.put(AnomalyTagKeys.ANOMALY_LEVEL, anomalyLevel.toString)
     // timestamp is in seconds
