@@ -131,7 +131,7 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-        <jackson.version>2.9.5</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <skipGpg>true</skipGpg>
         <mockito-core.version>2.23.0</mockito-core.version>
         <adaptive-alerting.version>1.0.0-SNAPSHOT</adaptive-alerting.version>
