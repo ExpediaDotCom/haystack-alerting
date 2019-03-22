@@ -50,16 +50,18 @@ class AnomalyDeserializer extends Deserializer[Anomaly] {
       return null
     }
     val tags = new util.HashMap[String, String](result.getMetricData.getMetricDefinition.getTags.getKv)
-    val expectedValue = result.getAnomalyResult.getPredicted
-    val anomalyLevel = result.getAnomalyResult.getAnomalyLevel
+    val expectedValue = if (result.getAnomalyResult == null)  null else result.getAnomalyResult.getPredicted
+    val anomalyLevel =  if (result.getAnomalyResult == null)  null else result.getAnomalyResult.getAnomalyLevel
     val observedValue = result.getMetricData.getValue
 
     tags.put(AnomalyTagKeys.METRIC_KEY, result.getMetricData.getMetricDefinition.getKey)
     if(expectedValue != null) {
       tags.put(AnomalyTagKeys.EXPECTED_VALUE, expectedValue.toString)
     }
+    if(anomalyLevel != null) {
+      tags.put(AnomalyTagKeys.ANOMALY_LEVEL, anomalyLevel.toString)
+    }
     tags.put(AnomalyTagKeys.OBSERVED_VALUE, observedValue.toString)
-    tags.put(AnomalyTagKeys.ANOMALY_LEVEL, anomalyLevel.toString)
     // timestamp is in seconds
     Anomaly(tags, result.getMetricData.getTimestamp)
   }
